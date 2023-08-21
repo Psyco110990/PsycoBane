@@ -890,16 +890,12 @@ public class Mob extends AbstractIntelligenceAgent {
 
         if (this.building != null) {
 
-            // Siege mobiles don't have contracts.
+            // Mobiles inside buildings are offset from it not the zone
 
-            if (this.contract == null) {
+            this.bindLoc = new Vector3fImmutable(this.statLat, this.statAlt, this.statLon);
+            this.bindLoc = this.building.getLoc().add(this.bindLoc);
 
-                // Mobiles inside buildings are offset from it not the zone
-
-                this.bindLoc = new Vector3fImmutable(this.statLat, this.statAlt, this.statLon);
-                this.bindLoc = this.building.getLoc().add(this.bindLoc);
-
-            } else
+            if (this.contract != null || this.isSiege)
                 NPCManager.slotCharacterInBuilding(this);
         }
 
