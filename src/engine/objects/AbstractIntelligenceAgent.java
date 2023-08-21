@@ -33,6 +33,10 @@ public abstract class AbstractIntelligenceAgent extends AbstractCharacter {
     public Enum.AIAgentType agentType = Enum.AIAgentType.MOBILE;
 
 
+    public AbstractIntelligenceAgent() {
+        super();
+    }
+
     public AbstractIntelligenceAgent(ResultSet rs) throws SQLException {
         super(rs);
     }

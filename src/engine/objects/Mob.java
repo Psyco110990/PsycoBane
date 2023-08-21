@@ -99,6 +99,12 @@ public class Mob extends AbstractIntelligenceAgent {
     private DateTime upgradeDateTime = null;
     private boolean lootSync = false;
 
+    // New Mobile constructor.  Fill in the blanks and then call
+    // PERSIST.
+    public Mob() {
+        this.dbID = MBServerStatics.NO_DB_ROW_ASSIGNED_YET;
+        this.currentID = MBServerStatics.NO_DB_ROW_ASSIGNED_YET;
+    }
 
     /**
      * No Id Constructor
@@ -109,7 +115,7 @@ public class Mob extends AbstractIntelligenceAgent {
         this.dbID = MBServerStatics.NO_DB_ROW_ASSIGNED_YET;
         this.loadID = npcType;
         this.mobBase = MobBase.getMobBase(loadID);
-        this.currentID = MBServerStatics.NO_DB_ROW_ASSIGNED_YET;
+        this.dbID = MBServerStatics.NO_DB_ROW_ASSIGNED_YET;
         this.parentZone = parent;
         this.parentZoneID = (parent != null) ? parent.getObjectUUID() : 0;
         this.building = building;
