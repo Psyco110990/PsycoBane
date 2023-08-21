@@ -144,7 +144,6 @@ public class PlayerCharacter extends AbstractCharacter {
     private long lastUpdateTime = System.currentTimeMillis();
     private long lastStamUpdateTime = System.currentTimeMillis();
     private boolean safeZone = false;
-    private int bindBuildingID;
 
     /*
     DataWarehouse based kill/death tracking.
@@ -205,7 +204,7 @@ public class PlayerCharacter extends AbstractCharacter {
         this.spiMod.set(spiMod);
 
         this.guildStatus = new AtomicInteger(0);
-        this.bindBuildingID = -1;
+        this.buildingUUID = -1;
     }
 
     /**
@@ -265,7 +264,7 @@ public class PlayerCharacter extends AbstractCharacter {
         this.intMod.set(rs.getShort("char_intMod"));
         this.spiMod.set(rs.getShort("char_spiMod"));
 
-        this.bindBuildingID = rs.getInt("char_bindBuilding");
+        this.buildingUUID = rs.getInt("char_bindBuilding");
 
         this.hash = rs.getString("hash");
 
@@ -2721,12 +2720,12 @@ public class PlayerCharacter extends AbstractCharacter {
      */
 
     public synchronized int getBindBuildingID() {
-        return this.bindBuildingID;
+        return this.buildingUUID;
     }
 
     public synchronized void setBindBuildingID(int value) {
         DbManager.PlayerCharacterQueries.SET_BIND_BUILDING(this, value);
-        this.bindBuildingID = value;
+        this.buildingUUID = value;
     }
 
     public AbstractGameObject getLastTarget() {

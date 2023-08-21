@@ -63,7 +63,6 @@ public class Mob extends AbstractIntelligenceAgent {
     public MobBase mobBase;
     public int spawnTime;
     public Zone parentZone;
-    public Building building;
     public boolean hasLoot = false;
     public boolean isPlayerGuard = false;
     public AbstractCharacter npcOwner;
@@ -89,7 +88,7 @@ public class Mob extends AbstractIntelligenceAgent {
     private int currentID;
     private int ownerUID = 0; //only used by pets
     private AbstractWorldObject fearedObject = null;
-    private int buildingID;
+
     public boolean isSiege = false;
     private long lastAttackTime = 0;
     private int lastMobPowerToken = 0;
@@ -120,9 +119,9 @@ public class Mob extends AbstractIntelligenceAgent {
         this.building = building;
 
         if (building != null)
-            this.buildingID = building.getObjectUUID();
+            this.buildingUUID = building.getObjectUUID();
         else
-            this.buildingID = 0;
+            this.buildingUUID = 0;
 
         if (contractID == 0)
             this.contract = null;
@@ -2000,11 +1999,11 @@ public class Mob extends AbstractIntelligenceAgent {
     }
 
     public int getBuildingID() {
-        return buildingID;
+        return buildingUUID;
     }
 
     public void setBuildingID(int buildingID) {
-        this.buildingID = buildingID;
+        this.buildingUUID = buildingID;
     }
 
     public boolean isSiege() {
