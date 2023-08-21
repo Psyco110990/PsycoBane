@@ -20,7 +20,6 @@ import engine.jobs.DeferredPowerJob;
 import engine.jobs.UpgradeNPCJob;
 import engine.math.Bounds;
 import engine.math.Quaternion;
-import engine.math.Vector3f;
 import engine.math.Vector3fImmutable;
 import engine.mobileAI.Threads.MobAIThread;
 import engine.net.ByteBufferWriter;
@@ -43,7 +42,6 @@ import java.util.LinkedHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import static engine.math.FastMath.acos;
 import static engine.net.client.msg.ErrorPopupMsg.sendErrorPopup;
 
 public class Mob extends AbstractIntelligenceAgent {
@@ -898,43 +896,8 @@ public class Mob extends AbstractIntelligenceAgent {
                 this.bindLoc = new Vector3fImmutable(this.statLat, this.statAlt, this.statLon);
                 this.bindLoc = this.building.getLoc().add(this.bindLoc);
 
-            } else {
-
-                // Get next available slot for this Mobile and then
-                // add it to the building's hireling list
-
-                slot = BuildingManager.getAvailableSlot(building);
-
-                if (slot == -1)
-                    Logger.error("No available slot for Mobile: " + this.getObjectUUID());
-
-                building.getHirelings().put(this, slot);
-
-                // Override bind and location for this contracted Mobile
-                // derived from BuildingManager slot location data.
-
-                slotLocation = BuildingManager.getSlotLocation(building, slot).getLocation();
-
-                this.bindLoc = building.getLoc().add(slotLocation);
-
-            }
-
-            // Rotate slot position by the building rotation
-
-            this.bindLoc = Vector3fImmutable.rotateAroundPoint(building.getLoc(), this.bindLoc, building.getBounds().getQuaternion().angleY);
-
-            this.loc = new Vector3fImmutable(bindLoc);
-            this.endLoc = new Vector3fImmutable(bindLoc);
-
-            // Rotate mobile rotation by the building's rotation
-
-            slotRotation = new Quaternion().fromAngles(0, acos(this.getRot().y) * 2, 0);
-            slotRotation = slotRotation.mult(building.getBounds().getQuaternion());
-            this.setRot(new Vector3f(0, slotRotation.y, 0));
-
-            // Configure building region and floor/level for this Mobile
-
-            this.region = BuildingManager.GetRegion(this.building, bindLoc.x, bindLoc.y, bindLoc.z);
+            } else
+                NPCManager.slotCharacterInBuilding(this);
         }
 
         if (this.mobBase != null) {
