@@ -343,7 +343,16 @@ public enum NPCManager {
         if (buildingSlot == -1)
             Logger.error("No available slot for NPC: " + abstractCharacter.getObjectUUID());
 
-        abstractCharacter.building.getHirelings().put(abstractCharacter, buildingSlot);
+        // Pets are regular mobiles not hirelings (Siege engines)
+
+        if (abstractCharacter.getObjectType().equals(Enum.GameObjectType.Mob)) {
+
+            Mob mobile = (Mob) abstractCharacter;
+
+            if (mobile.contract != null)
+                abstractCharacter.building.getHirelings().put(abstractCharacter, buildingSlot);
+        } else
+            abstractCharacter.building.getHirelings().put(abstractCharacter, buildingSlot);
 
         // Override bind and location for  this npc derived
         // from BuildingManager slot location data.
