@@ -349,7 +349,7 @@ public enum NPCManager {
 
             Mob mobile = (Mob) abstractCharacter;
 
-            if (mobile.contract != null)
+            if (mobile.isSiege == false)
                 abstractCharacter.building.getHirelings().put(abstractCharacter, buildingSlot);
         } else
             abstractCharacter.building.getHirelings().put(abstractCharacter, buildingSlot);

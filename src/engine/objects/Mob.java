@@ -90,7 +90,7 @@ public class Mob extends AbstractIntelligenceAgent {
     private int ownerUID = 0; //only used by pets
     private AbstractWorldObject fearedObject = null;
     private int buildingID;
-    private boolean isSiege = false;
+    public boolean isSiege = false;
     private long lastAttackTime = 0;
     private int lastMobPowerToken = 0;
     private HashMap<Integer, MobEquipment> equip = null;
