@@ -165,7 +165,7 @@ public class MobAI {
 
             if (playercity != null)
                 for (Mob guard : playercity.getParent().zoneMobSet)
-                    if (guard.BehaviourType != null && guard.BehaviourType.ordinal() == Enum.MobBehaviourType.GuardCaptain.ordinal())
+                    if (guard.BehaviourType != null && guard.BehaviourType.equals(Enum.MobBehaviourType.GuardCaptain))
                         if (guard.getCombatTarget() == null && !guard.getGuild().equals(mob.getGuild()))
                             guard.setCombatTarget(mob);
 
@@ -260,7 +260,7 @@ public class MobAI {
 
             //guard captains inherit barracks patrol points dynamically
 
-            if (mob.BehaviourType.ordinal() == Enum.MobBehaviourType.GuardCaptain.ordinal()) {
+            if (mob.BehaviourType.equals(Enum.MobBehaviourType.GuardCaptain)) {
 
                 Building barracks = mob.building;
 
@@ -608,7 +608,7 @@ public class MobAI {
 
             if (mob.despawned && mob.isPlayerGuard) {
 
-                if (mob.BehaviourType.ordinal() == Enum.MobBehaviourType.GuardMinion.ordinal()) {
+                if (mob.BehaviourType.equals(Enum.MobBehaviourType.GuardMinion)) {
                     if (mob.npcOwner.isAlive() == false || ((Mob) mob.npcOwner).despawned == true) {
 
                         //minions don't respawn while guard captain is dead
@@ -625,7 +625,7 @@ public class MobAI {
 
                 //check to send mob home for player guards to prevent exploit of dragging guards away and then teleporting
 
-                if (mob.BehaviourType.ordinal() != Enum.MobBehaviourType.Pet1.ordinal())
+                if (mob.BehaviourType.equals(Enum.MobBehaviourType.Pet1) == false)
                     CheckToSendMobHome(mob);
 
                 return;
@@ -646,7 +646,7 @@ public class MobAI {
                 return;
             }
 
-            if (mob.BehaviourType.ordinal() != Enum.MobBehaviourType.Pet1.ordinal())
+            if (mob.BehaviourType.equals(Enum.MobBehaviourType.Pet1) == false)
                 CheckToSendMobHome(mob);
 
             if (mob.getCombatTarget() != null) {
@@ -893,7 +893,8 @@ public class MobAI {
             if (mob.getCombatTarget() == null)
                 return;
 
-            if (mob.getCombatTarget().getObjectType().equals(Enum.GameObjectType.PlayerCharacter) && MovementUtilities.inRangeDropAggro(mob, (PlayerCharacter) mob.getCombatTarget()) == false && mob.BehaviourType.ordinal() != Enum.MobBehaviourType.Pet1.ordinal()) {
+            if (mob.getCombatTarget().getObjectType().equals(Enum.GameObjectType.PlayerCharacter) && MovementUtilities.inRangeDropAggro(mob, (PlayerCharacter) mob.getCombatTarget()) == false &&
+                    mob.BehaviourType.equals(Enum.MobBehaviourType.Pet1) == false) {
 
                 mob.setCombatTarget(null);
                 return;
@@ -912,7 +913,7 @@ public class MobAI {
             if (mob.BehaviourType.isAgressive) {
 
                 if (mob.isPlayerGuard()) {
-                    if (mob.BehaviourType.ordinal() == Enum.MobBehaviourType.GuardCaptain.ordinal())
+                    if (mob.BehaviourType.equals(Enum.MobBehaviourType.GuardCaptain))
                         CheckForPlayerGuardAggro(mob);
                 } else {
                     CheckForAggro(mob);
@@ -932,7 +933,7 @@ public class MobAI {
                     PowersManager.useMobPower(mob, mob, recall, 40);
                     mob.setCombatTarget(null);
 
-                    if (mob.BehaviourType.ordinal() == Enum.MobBehaviourType.GuardCaptain.ordinal() && mob.isAlive()) {
+                    if (mob.BehaviourType.equals(Enum.MobBehaviourType.GuardCaptain) && mob.isAlive()) {
 
                         //guard captain pulls his minions home with him
 
@@ -1246,7 +1247,7 @@ public class MobAI {
             if (mob.getGuild().getNation().equals(target.getGuild().getNation()))
                 return false;
 
-            if (mob.BehaviourType.ordinal() == Enum.MobBehaviourType.GuardMinion.ordinal()) {
+            if (mob.BehaviourType.equals(Enum.MobBehaviourType.GuardMinion)) {
                 if (((Mob) mob.npcOwner).building.getCity().cityOutlaws.contains(target.getObjectUUID()) == true) {
                     return true;
                 }
@@ -1331,7 +1332,7 @@ public class MobAI {
 
             MovementUtilities.aiMove(mob, mob.destination, true);
 
-            if (mob.BehaviourType.ordinal() == Enum.MobBehaviourType.GuardCaptain.ordinal()) {
+            if (mob.BehaviourType.equals(Enum.MobBehaviourType.GuardCaptain)) {
                 for (Entry<Mob, Integer> minion : mob.siegeMinionMap.entrySet()) {
 
                     //make sure mob is out of combat stance
