@@ -19,7 +19,6 @@ import engine.job.JobScheduler;
 import engine.jobs.DeferredPowerJob;
 import engine.jobs.UpgradeNPCJob;
 import engine.math.Bounds;
-import engine.math.Quaternion;
 import engine.math.Vector3fImmutable;
 import engine.mobileAI.Threads.MobAIThread;
 import engine.net.ByteBufferWriter;
@@ -869,10 +868,6 @@ public class Mob extends AbstractIntelligenceAgent {
     }
 
     private void initializeMob(boolean isPet, boolean isSiege, boolean isGuard) {
-
-        int slot;
-        Vector3fImmutable slotLocation;
-        Quaternion slotRotation;
 
         if (ConfigManager.serverType.equals(ServerType.LOGINSERVER))
             return;
