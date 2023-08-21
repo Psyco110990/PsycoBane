@@ -892,7 +892,7 @@ public class Mob extends AbstractIntelligenceAgent {
 
             // Siege mobiles don't have contracts.
 
-            if (this.contract == null && this.agentType.equals(AIAgentType.MOBILE)) {
+            if (this.contract == null) {
 
                 // Mobiles inside buildings are offset from it not the zone
 
