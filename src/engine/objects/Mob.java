@@ -941,9 +941,6 @@ public class Mob extends AbstractIntelligenceAgent {
         else
             this.currentID = this.dbID;
 
-        if (!isPet && !isSiege && !this.isPlayerGuard)
-            loadInventory();
-
         //store mobs by Database ID
 
         if (!isPet && !isSiege)
@@ -1308,7 +1305,7 @@ public class Mob extends AbstractIntelligenceAgent {
                 playerAgroMap.clear();
 
                 if (!this.isPlayerGuard && this.equip != null)
-                    LootManager.GenerateMobLoot(this, true);
+                    LootManager.GenerateEquipmentDrop(this);
 
             }
             try {
@@ -1398,7 +1395,7 @@ public class Mob extends AbstractIntelligenceAgent {
         if (isPlayerGuard)
             return;
 
-        LootManager.GenerateMobLoot(this, false);
+        LootManager.GenerateMobLoot(this);
     }
 
     @Override
@@ -1892,7 +1889,7 @@ public class Mob extends AbstractIntelligenceAgent {
         // Initialize inventory
 
         this.charItemManager = new CharacterItemManager(this);
-
+        this.loadInventory();
         try {
             if (this.equipmentSetID != 0)
                 this.equip = MobBase.loadEquipmentSet(this.equipmentSetID);
@@ -2195,7 +2192,7 @@ public class Mob extends AbstractIntelligenceAgent {
         if (this.isPet()) {
 
             if ((this.agentType.equals(AIAgentType.PET))) { //delete summoned pet
-
+                this.despawn();
                 WorldGrid.RemoveWorldObject(this);
                 DbManager.removeFromCache(this);
 
