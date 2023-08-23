@@ -833,33 +833,6 @@ public class Mob extends AbstractIntelligenceAgent {
         if (ConfigManager.serverType.equals(ServerType.LOGINSERVER))
             return;
 
-        // Configure parent zone adding this NPC to the
-        // zone collection
-
-        this.parentZone = ZoneManager.getZoneByUUID(this.parentZoneID);
-        this.parentZone.zoneMobSet.remove(this);
-        this.parentZone.zoneMobSet.add(this);
-
-        // Setup location for this Mobile
-
-        this.bindLoc = new Vector3fImmutable(this.statLat, this.statAlt, this.statLon);
-        this.bindLoc = this.parentZone.getLoc().add(this.bindLoc);
-        this.loc = new Vector3fImmutable(bindLoc);
-        this.endLoc = new Vector3fImmutable(bindLoc);
-
-        // Handle Mobiles within buildings
-
-        if (this.building != null) {
-
-            // Mobiles inside buildings are offset from it not the zone
-
-            this.bindLoc = new Vector3fImmutable(this.statLat, this.statAlt, this.statLon);
-            this.bindLoc = this.building.getLoc().add(this.bindLoc);
-
-            if (this.contract != null || this.isSiege)
-                NPCManager.slotCharacterInBuilding(this);
-        }
-
         if (this.mobBase != null) {
             this.gridObjectType = GridObjectType.DYNAMIC;
             this.healthMax = this.mobBase.getHealthMax();
@@ -1885,6 +1858,35 @@ public class Mob extends AbstractIntelligenceAgent {
             this.lastName = this.getContract().getName();
         }
 
+        if (ConfigManager.serverType.equals(ServerType.LOGINSERVER))
+            return;
+
+        // Configure parent zone adding this NPC to the
+        // zone collection
+
+        this.parentZone = ZoneManager.getZoneByUUID(this.parentZoneID);
+        this.parentZone.zoneMobSet.remove(this);
+        this.parentZone.zoneMobSet.add(this);
+
+        // Setup location for this Mobile
+
+        this.bindLoc = new Vector3fImmutable(this.statLat, this.statAlt, this.statLon);
+        this.bindLoc = this.parentZone.getLoc().add(this.bindLoc);
+        this.loc = new Vector3fImmutable(bindLoc);
+        this.endLoc = new Vector3fImmutable(bindLoc);
+
+        // Handle Mobiles within buildings
+
+        if (this.building != null) {
+
+            // Mobiles inside buildings are offset from it not the zone
+
+            this.bindLoc = new Vector3fImmutable(this.statLat, this.statAlt, this.statLon);
+            this.bindLoc = this.building.getLoc().add(this.bindLoc);
+
+            if (this.contract != null || this.isSiege)
+                NPCManager.slotCharacterInBuilding(this);
+        }
 
         // Initialize inventory
 
