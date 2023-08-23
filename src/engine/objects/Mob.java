@@ -246,11 +246,8 @@ public class Mob extends AbstractIntelligenceAgent {
             Logger.error(e + " " + this.dbID);
         }
 
-        try {
-            initializeMob(false, false, this.isPlayerGuard);
-        } catch (Exception e) {
-            Logger.error("Mobile:" + this.dbID + ": " + e);
-        }
+        initializeMob(false, false, this.isPlayerGuard);
+
 
     }
 
