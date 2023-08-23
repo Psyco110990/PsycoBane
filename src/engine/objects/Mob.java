@@ -193,12 +193,10 @@ public class Mob extends AbstractIntelligenceAgent {
 
         try {
             this.dbID = rs.getInt(1);
-            //this.state = STATE.Idle;
             this.loadID = rs.getInt("mob_mobbaseID");
             this.gridObjectType = GridObjectType.DYNAMIC;
             this.spawnRadius = rs.getFloat("mob_spawnRadius");
             this.spawnTime = rs.getInt("mob_spawnTime");
-            this.parentZone = null;
             this.statLat = rs.getFloat("mob_spawnX");
             this.statAlt = rs.getFloat("mob_spawnY");
             this.statLon = rs.getFloat("mob_spawnZ");
@@ -207,36 +205,14 @@ public class Mob extends AbstractIntelligenceAgent {
 
             this.parentZoneID = rs.getInt("parent");
             this.level = (short) rs.getInt("mob_level");
-            int buildingID = rs.getInt("mob_buildingID");
 
-            try {
-                this.building = BuildingManager.getBuilding(buildingID);
-            } catch (Exception e) {
-                this.building = null;
-                Logger.error(e.getMessage());
-            }
+            this.buildingUUID = rs.getInt("mob_buildingID");
 
-            int contractID = rs.getInt("mob_contractID");
+            this.contractUUID = rs.getInt("mob_contractID");
 
-            if (contractID == 0)
-                this.contract = null;
-            else
-                this.contract = DbManager.ContractQueries.GET_CONTRACT(contractID);
+            this.guildUUID = rs.getInt("mob_guildUID");
 
-            if (this.contract != null && NPC.ISGuardCaptain(contract.getContractID())) {
-                this.spawnTime = 60 * 15;
-                this.isPlayerGuard = true;
-            }
-
-            int guildID = rs.getInt("mob_guildUID");
-
-            if (this.building != null)
-                this.guild = this.building.getGuild();
-            else
-                this.guild = Guild.getGuild(guildID);
-
-            if (this.guild == null)
-                this.guild = Guild.getErrantGuild();
+            this.equipmentSetID = rs.getInt("equipmentSet");
 
             java.util.Date sqlDateTime;
             sqlDateTime = rs.getTimestamp("upgradeDate");
@@ -251,10 +227,6 @@ public class Mob extends AbstractIntelligenceAgent {
             if (this.upgradeDateTime != null)
                 Mob.submitUpgradeJob(this);
 
-            this.mobBase = MobBase.getMobBase(loadID);
-
-            this.setObjectTypeMask(MBServerStatics.MASK_MOB | this.getTypeMasks());
-
             if (this.mobBase != null && this.spawnTime == 0)
                 this.spawnTime = this.mobBase.getSpawnTime();
 
@@ -266,16 +238,6 @@ public class Mob extends AbstractIntelligenceAgent {
             this.notEnemy = EnumBitSet.asEnumBitSet(rs.getLong("notEnemy"), Enum.MonsterType.class);
             this.enemy = EnumBitSet.asEnumBitSet(rs.getLong("enemy"), Enum.MonsterType.class);
             this.firstName = rs.getString("mob_name");
-
-            if (this.firstName.isEmpty())
-                this.firstName = this.mobBase.getFirstName();
-
-            if (this.contract != null) {
-                this.equipmentSetID = this.contract.getEquipmentSet();
-                this.lastName = this.getContract().getName();
-            } else
-                this.equipmentSetID = rs.getInt("equipmentSet");
-
 
             if (rs.getString("fsm").length() > 1)
                 this.BehaviourType = MobBehaviourType.valueOf(rs.getString("fsm"));
@@ -1885,6 +1847,44 @@ public class Mob extends AbstractIntelligenceAgent {
 
     @Override
     public void runAfterLoad() {
+
+        try {
+            this.building = BuildingManager.getBuilding(this.buildingUUID);
+        } catch (Exception e) {
+            this.building = null;
+            Logger.error(e.getMessage());
+        }
+
+        if (this.contractUUID == 0)
+            this.contract = null;
+        else
+            this.contract = DbManager.ContractQueries.GET_CONTRACT(this.contractUUID);
+
+        if (this.contract != null && NPC.ISGuardCaptain(contract.getContractID())) {
+            this.spawnTime = 60 * 15;
+            this.isPlayerGuard = true;
+        }
+
+        if (this.building != null)
+            this.guild = this.building.getGuild();
+        else
+            this.guild = Guild.getGuild(guildUUID);
+
+        if (this.guild == null)
+            this.guild = Guild.getErrantGuild();
+
+        this.mobBase = MobBase.getMobBase(loadID);
+
+        this.setObjectTypeMask(MBServerStatics.MASK_MOB | this.getTypeMasks());
+
+        if (this.firstName.isEmpty())
+            this.firstName = this.mobBase.getFirstName();
+
+        if (this.contract != null) {
+            this.equipmentSetID = this.contract.getEquipmentSet();
+            this.lastName = this.getContract().getName();
+        }
+
 
         // Initialize inventory
 
