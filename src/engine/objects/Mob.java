@@ -246,6 +246,12 @@ public class Mob extends AbstractIntelligenceAgent {
             Logger.error(e + " " + this.dbID);
         }
 
+        try {
+            initializeMob(false, false, this.isPlayerGuard);
+        } catch (Exception e) {
+            Logger.error("Mobile:" + this.dbID + ": " + e);
+        }
+
     }
 
     public static void serializeMobForClientMsgOtherPlayer(Mob mob, ByteBufferWriter writer) throws SerializationException {
@@ -1881,8 +1887,6 @@ public class Mob extends AbstractIntelligenceAgent {
             if (this.contract != null || this.isSiege)
                 NPCManager.slotCharacterInBuilding(this);
         }
-
-        initializeMob(false, false, this.isPlayerGuard);
 
         // Initialize inventory
 
