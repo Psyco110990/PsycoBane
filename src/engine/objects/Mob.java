@@ -150,7 +150,6 @@ public class Mob extends AbstractIntelligenceAgent {
         this.parentZone = parent;
         this.parentZoneID = (parent != null) ? parent.getObjectUUID() : 0;
         this.building = building;
-        initializeMob(false, false, false);
         clearStatic();
     }
 
@@ -166,7 +165,6 @@ public class Mob extends AbstractIntelligenceAgent {
         this.parentZoneID = (parent != null) ? parent.getObjectUUID() : 0;
         this.ownerUID = owner.getObjectUUID();
         this.BehaviourType = Enum.MobBehaviourType.Pet1;
-        initializeMob(true, false, false);
         clearStatic();
     }
 
@@ -180,7 +178,6 @@ public class Mob extends AbstractIntelligenceAgent {
         this.parentZoneID = (parent != null) ? parent.getObjectUUID() : 0;
         this.ownerUID = 0;
         this.equip = new HashMap<>();
-        initializeMob(false, true, isPlayerGuard);
         clearStatic();
     }
 
@@ -242,12 +239,14 @@ public class Mob extends AbstractIntelligenceAgent {
             if (rs.getString("fsm").length() > 1)
                 this.BehaviourType = MobBehaviourType.valueOf(rs.getString("fsm"));
 
+            if (this.isPet() || this.isSiege || (this.isPlayerGuard && this.contract == null))
+                this.currentID = (--Mob.staticID);
+            else
+                this.currentID = this.dbID;
+
         } catch (Exception e) {
             Logger.error(e + " " + this.dbID);
         }
-
-        initializeMob(false, false, this.isPlayerGuard);
-
 
     }
 
@@ -823,61 +822,6 @@ public class Mob extends AbstractIntelligenceAgent {
         this.statLat = 0f;
         this.statLon = 0f;
         this.statAlt = 0f;
-    }
-
-    private void initializeMob(boolean isPet, boolean isSiege, boolean isGuard) {
-
-        if (ConfigManager.serverType.equals(ServerType.LOGINSERVER))
-            return;
-
-        if (this.mobBase != null) {
-            this.gridObjectType = GridObjectType.DYNAMIC;
-            this.healthMax = this.mobBase.getHealthMax();
-            this.manaMax = 0;
-            this.staminaMax = 0;
-            this.setHealth(this.healthMax);
-            this.mana.set(this.manaMax);
-            this.stamina.set(this.staminaMax);
-
-            if (isPet)
-                this.setObjectTypeMask(MBServerStatics.MASK_PET | this.getTypeMasks());
-
-            if (this.contract == null)
-                this.level = (short) this.mobBase.getLevel();
-        }
-
-        //set bonuses
-        this.bonuses = new PlayerBonuses(this);
-
-        //TODO set these correctly later
-        this.rangeHandOne = 8;
-        this.rangeHandTwo = -1;
-        this.minDamageHandOne = 0;
-        this.maxDamageHandOne = 0;
-        this.minDamageHandTwo = 1;
-        this.maxDamageHandTwo = 4;
-        this.atrHandOne = 300;
-        this.defenseRating = (short) this.mobBase.getDefenseRating();
-        this.isActive = true;
-
-        this.charItemManager.load();
-
-        //load AI for general mobs.
-        if (this.contract != null && NPC.ISWallArcher(this.contract)) {
-            this.BehaviourType = MobBehaviourType.GuardWallArcher;
-            this.isPlayerGuard = true;
-            this.spawnTime = 450;
-        }
-        if (isPet || isSiege || (isGuard && this.contract == null))
-            this.currentID = (--Mob.staticID);
-        else
-            this.currentID = this.dbID;
-
-        //store mobs by Database ID
-
-        if (!isPet && !isSiege)
-            Mob.mobMapByDBID.put(this.dbID, this);
-
     }
 
     /*
@@ -1818,6 +1762,14 @@ public class Mob extends AbstractIntelligenceAgent {
     @Override
     public void runAfterLoad() {
 
+        if (ConfigManager.serverType.equals(ServerType.LOGINSERVER))
+            return;
+
+        // Add new object to collection
+
+        if (!this.isPet() && !isSiege)
+            Mob.mobMapByDBID.put(this.dbID, this);
+
         try {
             this.building = BuildingManager.getBuilding(this.buildingUUID);
         } catch (Exception e) {
@@ -1855,8 +1807,48 @@ public class Mob extends AbstractIntelligenceAgent {
             this.lastName = this.getContract().getName();
         }
 
-        if (ConfigManager.serverType.equals(ServerType.LOGINSERVER))
-            return;
+        //store mobs by Database ID
+
+        if (!this.isPet() && !isSiege)
+            Mob.mobMapByDBID.put(this.dbID, this);
+
+        if (this.mobBase != null) {
+            this.gridObjectType = GridObjectType.DYNAMIC;
+            this.healthMax = this.mobBase.getHealthMax();
+            this.manaMax = 0;
+            this.staminaMax = 0;
+            this.setHealth(this.healthMax);
+            this.mana.set(this.manaMax);
+            this.stamina.set(this.staminaMax);
+
+            if (this.contract == null)
+                this.level = (short) this.mobBase.getLevel();
+
+            //set bonuses
+            this.bonuses = new PlayerBonuses(this);
+
+            //TODO set these correctly later
+            this.rangeHandOne = 8;
+            this.rangeHandTwo = -1;
+            this.minDamageHandOne = 0;
+            this.maxDamageHandOne = 0;
+            this.minDamageHandTwo = 1;
+            this.maxDamageHandTwo = 4;
+            this.atrHandOne = 300;
+            this.defenseRating = (short) this.mobBase.getDefenseRating();
+            this.isActive = true;
+
+            this.charItemManager.load();
+
+            // Load AI for wall archers
+
+            if (this.contract != null && NPC.ISWallArcher(this.contract)) {
+                this.BehaviourType = MobBehaviourType.GuardWallArcher;
+                this.isPlayerGuard = true;
+                this.spawnTime = 450;
+            }
+
+        }
 
         // Configure parent zone adding this NPC to the
         // zone collection
