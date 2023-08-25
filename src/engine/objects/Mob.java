@@ -45,8 +45,6 @@ import static engine.net.client.msg.ErrorPopupMsg.sendErrorPopup;
 public class Mob extends AbstractIntelligenceAgent {
 
     private static final ReentrantReadWriteLock createLock = new ReentrantReadWriteLock();
-    private static final ConcurrentHashMap<Integer, Mob> mobMapByDBID = new ConcurrentHashMap<>(MBServerStatics.CHM_INIT_CAP, MBServerStatics.CHM_LOAD, MBServerStatics.CHM_THREAD_LOW);
-    // Variables NOT to be stored in db
     private static int staticID = 0;
     //mob specific
     public final ConcurrentHashMap<Integer, Boolean> playerAgroMap = new ConcurrentHashMap<>();
@@ -553,12 +551,6 @@ public class Mob extends AbstractIntelligenceAgent {
 
 
         return (Mob) DbManager.getFromCache(GameObjectType.Mob, id);
-    }
-
-    public static Mob getFromCacheDBID(int id) {
-        if (Mob.mobMapByDBID.containsKey(id))
-            return Mob.mobMapByDBID.get(id);
-        return null;
     }
 
     private static float getModifiedAmount(CharacterSkill skill) {
@@ -1690,11 +1682,6 @@ public class Mob extends AbstractIntelligenceAgent {
         if (ConfigManager.serverType.equals(ServerType.LOGINSERVER))
             return;
 
-        // Add new object to collection
-
-        if (!this.isPet() && !isSiege)
-            Mob.mobMapByDBID.put(this.dbID, this);
-
         try {
             this.building = BuildingManager.getBuilding(this.buildingUUID);
         } catch (Exception e) {
@@ -1722,6 +1709,15 @@ public class Mob extends AbstractIntelligenceAgent {
             this.spawnTime = 450;
         }
 
+        // Load AI for guard dogs
+
+        if (this.contract != null && this.contract.getContractID() == 910) {
+            this.isPlayerGuard = true;
+            this.behaviourType = MobBehaviourType.GuardCaptain;
+            this.spawnTime = 900;
+            this.guardedCity = ZoneManager.getCityAtLocation(this.bindLoc);
+        }
+
         if (this.building != null)
             this.guild = this.building.getGuild();
         else
@@ -1741,11 +1737,6 @@ public class Mob extends AbstractIntelligenceAgent {
             this.equipmentSetID = this.contract.getEquipmentSet();
             this.lastName = this.getContract().getName();
         }
-
-        //store mobs by Database ID
-
-        if (!this.isPet() && !isSiege)
-            Mob.mobMapByDBID.put(this.dbID, this);
 
         this.gridObjectType = GridObjectType.DYNAMIC;
         this.healthMax = this.mobBase.getHealthMax();
@@ -1853,12 +1844,6 @@ public class Mob extends AbstractIntelligenceAgent {
             mobBounds.setBounds(this.getLoc());
             this.setBounds(mobBounds);
 
-            if (this.contract != null && this.contract.getContractID() == 910) {
-                this.isPlayerGuard = true;
-                this.behaviourType = MobBehaviourType.GuardCaptain;
-                this.spawnTime = 900;
-                this.guardedCity = ZoneManager.getCityAtLocation(this.bindLoc);
-            }
             //assign 5 random patrol points for regular mobs
 
             if (!(this.agentType.equals(AIAgentType.GUARD)) && !this.isPlayerGuard() && !this.isPet() && !this.isNecroPet() && !(this.agentType.equals(AIAgentType.PET)) && !(this.agentType.equals(AIAgentType.CHARMED))) {

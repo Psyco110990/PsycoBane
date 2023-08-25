@@ -557,7 +557,7 @@ public class ManageNPCMsg extends ClientNetMsg {
 
                 } else if (this.targetType == GameObjectType.Mob.ordinal()) {
 
-                    mobA = Mob.getFromCacheDBID(this.targetID);
+                    mobA = Mob.getMob(this.targetID);
 
                     if (mobA == null) {
                         Logger.error("Missing Mob of ID " + this.targetID);

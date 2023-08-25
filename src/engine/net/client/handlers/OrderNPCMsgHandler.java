@@ -541,7 +541,7 @@ public class OrderNPCMsgHandler extends AbstractClientMsgHandler {
 
         } else if (orderNPCMsg.getObjectType() == GameObjectType.Mob.ordinal()) {
 
-            mob = Mob.getFromCacheDBID(orderNPCMsg.getNpcUUID());
+            mob = Mob.getMob(orderNPCMsg.getNpcUUID());
 
             if (mob == null)
                 return true;
