@@ -1689,11 +1689,14 @@ public class Mob extends AbstractIntelligenceAgent {
         else
             this.contract = DbManager.ContractQueries.GET_CONTRACT(this.contractUUID);
 
-        // Guard captain AI
+        // Setup mobile AI
 
         if (this.contract != null) {
 
-            if (NPC.ISGuardCaptain(contract.getContractID())) {
+            // Load AI for guard captains
+
+            if (NPC.ISGuardCaptain(contract.getContractID()) || this.contract.getContractID() == 910) {  // Guard Dog
+                this.behaviourType = MobBehaviourType.GuardCaptain;
                 this.spawnTime = 60 * 15;
                 this.isPlayerGuard = true;
                 this.guardedCity = ZoneManager.getCityAtLocation(this.building.getLoc());
@@ -1708,20 +1711,15 @@ public class Mob extends AbstractIntelligenceAgent {
                 this.guardedCity = ZoneManager.getCityAtLocation(this.building.getLoc());
             }
 
-            // Load AI for guard dogs
-
-            if (this.contract.getContractID() == 910) {
-                this.isPlayerGuard = true;
-                this.behaviourType = MobBehaviourType.GuardCaptain;
-                this.spawnTime = 900;
-                this.guardedCity = ZoneManager.getCityAtLocation(this.building.getLoc());
-            }
         }
 
         // Default to the mobbase for AI if nothing is hte mob field to override.
 
         if (this.behaviourType == null || this.behaviourType.equals(MobBehaviourType.None))
             this.behaviourType = this.getMobBase().fsm;
+
+        if (this.behaviourType == null)
+            this.behaviourType = MobBehaviourType.None;
 
         if (this.building != null)
             this.guild = this.building.getGuild();
