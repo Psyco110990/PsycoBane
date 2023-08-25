@@ -474,7 +474,7 @@ public class Mob extends AbstractIntelligenceAgent {
         mobile.loadID = loadID;
         mobile.level = (short) level;
 
-        if (guild.isEmptyGuild())
+        if (guild == null || guild.isEmptyGuild())
             mobile.guildUUID = 0;
         else
             mobile.guildUUID = guild.getObjectUUID();
