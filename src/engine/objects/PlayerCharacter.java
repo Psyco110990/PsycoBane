@@ -211,7 +211,10 @@ public class PlayerCharacter extends AbstractCharacter {
      * ResultSet Constructor
      */
     public PlayerCharacter(ResultSet rs) throws SQLException {
+
         super(rs, true);
+
+        this.charItemManager = new CharacterItemManager(this);
 
         this.runes = DbManager.CharacterRuneQueries.GET_RUNES_FOR_CHARACTER(this.getObjectUUID());
         int accountID = rs.getInt("parent");
@@ -4559,10 +4562,6 @@ public class PlayerCharacter extends AbstractCharacter {
 
     @Override
     public void runAfterLoad() {
-
-        // Init inventory
-
-        this.charItemManager = new CharacterItemManager(this);
 
         Bounds playerBounds = Bounds.borrow();
         playerBounds.setBounds(this.getLoc());
