@@ -1778,6 +1778,14 @@ public class Mob extends AbstractIntelligenceAgent {
             this.isPlayerGuard = true;
         }
 
+        // Load AI for wall archers
+
+        if (this.contract != null && NPC.ISWallArcher(this.contract)) {
+            this.BehaviourType = MobBehaviourType.GuardWallArcher;
+            this.isPlayerGuard = true;
+            this.spawnTime = 450;
+        }
+
         if (this.building != null)
             this.guild = this.building.getGuild();
         else
@@ -1828,14 +1836,6 @@ public class Mob extends AbstractIntelligenceAgent {
             this.atrHandOne = 300;
             this.defenseRating = (short) this.mobBase.getDefenseRating();
             this.isActive = true;
-
-            // Load AI for wall archers
-
-            if (this.contract != null && NPC.ISWallArcher(this.contract)) {
-                this.BehaviourType = MobBehaviourType.GuardWallArcher;
-                this.isPlayerGuard = true;
-                this.spawnTime = 450;
-            }
 
         }
 
