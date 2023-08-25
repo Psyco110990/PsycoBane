@@ -26,7 +26,6 @@ import engine.net.Dispatch;
 import engine.net.DispatchMessage;
 import engine.net.client.msg.PetMsg;
 import engine.net.client.msg.PlaceAssetMsg;
-import engine.powers.EffectsBase;
 import engine.powers.MobPowerEntry;
 import engine.server.MBServerStatics;
 import org.joda.time.DateTime;
@@ -638,132 +637,64 @@ public class Mob extends AbstractIntelligenceAgent {
         mob.upgradeDateTime = upgradeDateTime;
     }
 
-    public static synchronized Mob createGuardMob(Mob guardCaptain, Guild guild, Zone parent, Vector3fImmutable loc, short level, String pirateName) {
+    public static synchronized Mob createGuardMinion(Mob guardCaptain, short level, String minionName) {
 
         MobBase minionMobBase;
-        Mob mob;
-        int maxSlots;
+        Mob minionMobile;
 
-        switch (guardCaptain.getRank()) {
-            case 3:
-                maxSlots = 2;
-                break;
-            case 4:
-            case 5:
-                maxSlots = 3;
-                break;
-            case 6:
-                maxSlots = 4;
-                break;
-            case 7:
-                maxSlots = 5;
-                break;
-            case 1:
-            case 2:
-            default:
-                maxSlots = 1;
-
-        }
+        int maxSlots = NPCManager.getMaxMinions(guardCaptain);
 
         if (guardCaptain.siegeMinionMap.size() == maxSlots)
             return null;
 
-        minionMobBase = guardCaptain.mobBase;
+        minionMobile = new Mob();
+        minionMobile.level = level;
+        minionMobile.loadID = guardCaptain.loadID;
+        minionMobile.firstName = minionName;
+        minionMobile.equipmentSetID = guardCaptain.equipmentSetID;
 
-        if (minionMobBase == null)
-            return null;
+        minionMobile.runeSet = guardCaptain.runeSet;
+        minionMobile.enemy = guardCaptain.enemy;
+        minionMobile.notEnemy = guardCaptain.notEnemy;
 
-        mob = new Mob(minionMobBase, guild, parent, level, new Vector3fImmutable(1, 1, 1), 0, true);
-        mob.setLevel(level);
-        if (guardCaptain.equipmentSetID != 0)
-            mob.equipmentSetID = guardCaptain.equipmentSetID;
+        minionMobile.deathTime = System.currentTimeMillis();
+        minionMobile.npcOwner = guardCaptain;
+        minionMobile.spawnTime = (int) (-2.500 * guardCaptain.building.getRank() + 22.5) * 60;
+        minionMobile.BehaviourType = Enum.MobBehaviourType.GuardMinion;
+        minionMobile.guardedCity = guardCaptain.guardedCity;
+        minionMobile.parentZoneUUID = guardCaptain.parentZoneUUID;
+        MovementManager.translocate(minionMobile, guardCaptain.bindLoc, guardCaptain.region);
+        minionMobile.bindLoc = guardCaptain.bindLoc;
 
-        mob.enemy = guardCaptain.enemy;
-        mob.notEnemy = guardCaptain.notEnemy;
-
-        mob.runAfterLoad();
-        mob.despawned = true;
-        mob.despawn();
+        minionMobile.runAfterLoad();
+        minionMobile.despawned = true;
+        minionMobile.despawn();
 
         //grab equipment and name from minionbase.
 
-        if (guardCaptain.contract != null) {
-            Enum.MinionType minionType = Enum.MinionType.ContractToMinionMap.get(guardCaptain.contract.getContractID());
-            if (minionType != null) {
-                String rank;
+        Enum.MinionType minionType = Enum.MinionType.ContractToMinionMap.get(guardCaptain.contract.getContractID());
 
-                if (guardCaptain.getRank() < 3)
-                    rank = MBServerStatics.JUNIOR;
-                else if (guardCaptain.getRank() < 6)
-                    rank = "";
-                else if (guardCaptain.getRank() == 6)
-                    rank = MBServerStatics.VETERAN;
-                else
-                    rank = MBServerStatics.ELITE;
+        if (minionType != null) {
+            String rank;
 
-                mob.firstName = NPCManager.getPirateName(mob.getMobBaseID());
-                mob.lastName = rank + " " + minionType.getRace() + " " + minionType.getName();
-            }
+            if (guardCaptain.getRank() < 3)
+                rank = MBServerStatics.JUNIOR;
+            else if (guardCaptain.getRank() < 6)
+                rank = "";
+            else if (guardCaptain.getRank() == 6)
+                rank = MBServerStatics.VETERAN;
+            else
+                rank = MBServerStatics.ELITE;
+
+            minionMobile.lastName = rank + " " + minionType.getRace() + " " + minionType.getName();
         }
 
-        mob.setObjectTypeMask(MBServerStatics.MASK_MOB | mob.getTypeMasks());
+        DbManager.addToCache(minionMobile);
 
-        mob.isPlayerGuard = true;
+        int slot = guardCaptain.siegeMinionMap.size() + 1;
+        guardCaptain.siegeMinionMap.put(minionMobile, slot);
 
-        DbManager.addToCache(mob);
-
-        RuneBase guardRune = RuneBase.getRuneBase(252621);
-
-        for (MobBaseEffects mbe : guardRune.getEffectsList()) {
-
-            EffectsBase eb = PowersManager.getEffectByToken(mbe.getToken());
-
-            if (eb == null) {
-                Logger.info("EffectsBase Null for Token " + mbe.getToken());
-                continue;
-            }
-
-            //check to upgrade effects if needed.
-            if (mob.effects.containsKey(Integer.toString(eb.getUUID()))) {
-                if (mbe.getReqLvl() > (int) mob.level) {
-                    continue;
-                }
-
-                Effect eff = mob.effects.get(Integer.toString(eb.getUUID()));
-
-                if (eff == null)
-                    continue;
-
-                //Current effect is a higher rank, dont apply.
-                if (eff.getTrains() > mbe.getRank())
-                    continue;
-
-                //new effect is of a higher rank. remove old effect and apply new one.
-                eff.cancelJob();
-                mob.addEffectNoTimer(Integer.toString(eb.getUUID()), eb, mbe.getRank(), true);
-            } else {
-
-                if (mbe.getReqLvl() > (int) mob.level)
-                    continue;
-
-                mob.addEffectNoTimer(Integer.toString(eb.getUUID()), eb, mbe.getRank(), true);
-            }
-        }
-
-        int slot = 0;
-        slot += guardCaptain.siegeMinionMap.size() + 1;
-
-        guardCaptain.siegeMinionMap.put(mob, slot);
-        mob.deathTime = System.currentTimeMillis();
-        mob.npcOwner = guardCaptain;
-        mob.spawnTime = (int) (-2.500 * guardCaptain.building.getRank() + 22.5) * 60;
-        mob.BehaviourType = Enum.MobBehaviourType.GuardMinion;
-        mob.guardedCity = guardCaptain.guardedCity;
-        mob.parentZone = parent;
-        parent.zoneMobSet.add(mob);
-        MovementManager.translocate(mob, guardCaptain.bindLoc, guardCaptain.region);
-        mob.bindLoc = guardCaptain.bindLoc;
-        return mob;
+        return minionMobile;
     }
 
     public static synchronized Mob createSiegeMob(NPC owner, int loadID, Guild guild, Zone parent, Vector3fImmutable loc, short level) {

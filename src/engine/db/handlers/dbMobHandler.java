@@ -110,8 +110,8 @@ public class dbMobHandler extends dbHandlerBase {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
-                String name = rs.getString("name");
-                Mob toCreate = Mob.createGuardMob(guardCaptain, guardCaptain.getGuild(), guardCaptain.getParentZone(), guardCaptain.building.getLoc(), guardCaptain.getLevel(), name);
+                String minionName = rs.getString("name");
+                Mob toCreate = Mob.createGuardMinion(guardCaptain, guardCaptain.getLevel(), minionName);
 
                 if (toCreate == null)
                     return;

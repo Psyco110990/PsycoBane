@@ -379,4 +379,31 @@ public enum NPCManager {
 
         return buildingSlot;
     }
+
+    public static int getMaxMinions(Mob guardCaptain) {
+
+        int maxSlots;
+
+        switch (guardCaptain.getRank()) {
+            case 3:
+                maxSlots = 2;
+                break;
+            case 4:
+            case 5:
+                maxSlots = 3;
+                break;
+            case 6:
+                maxSlots = 4;
+                break;
+            case 7:
+                maxSlots = 5;
+                break;
+            case 1:
+            case 2:
+            default:
+                maxSlots = 1;
+
+        }
+        return maxSlots;
+    }
 }
