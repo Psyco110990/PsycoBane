@@ -11,6 +11,7 @@ package engine.devcmd.cmds;
 
 import engine.Enum.GameObjectType;
 import engine.devcmd.AbstractDevCmd;
+import engine.gameManager.PowersManager;
 import engine.objects.AbstractGameObject;
 import engine.objects.Mob;
 import engine.objects.PlayerCharacter;
@@ -85,10 +86,12 @@ public class aiInfoCmd extends AbstractDevCmd {
             output += "Current Target: NULL" + newline;
 
         if (mob.guardedCity != null)
-            output += mob.guardedCity.getCityName() + newline;
+            output += "Patrolling: " + mob.guardedCity.getCityName() + newline;
+
+        output += "Powers:" + newline;
 
         for (int token : mob.mobPowers.keySet())
-            output += token + newline;
+            output += PowersManager.getPowerByToken(token).getName() + newline;
 
         throwbackInfo(playerCharacter, output);
     }
