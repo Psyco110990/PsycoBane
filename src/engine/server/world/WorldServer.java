@@ -17,6 +17,7 @@ import engine.InterestManagement.HeightMap;
 import engine.InterestManagement.RealmMap;
 import engine.InterestManagement.WorldGrid;
 import engine.db.archive.DataWarehouse;
+import engine.db.handlers.dbPowerHandler;
 import engine.exception.MsgSendException;
 import engine.gameManager.*;
 import engine.job.JobContainer;
@@ -351,7 +352,7 @@ public class WorldServer {
 		DbManager.MobBaseQueries.GET_ALL_MOBBASES();
 
 		Logger.info("Loading Mob Powers");
-		PowersManager.AllMobPowers = DbManager.PowerQueries.LOAD_MOB_POWERS();
+		PowersManager.AllMobPowers = dbPowerHandler.LOAD_MOB_POWERS();
 
 		Logger.info("Loading item enchants");
 		DbManager.LootQueries.LOAD_ENCHANT_VALUES();
@@ -481,7 +482,7 @@ public class WorldServer {
 
 		Logger.info("Initializing Client Connection Manager");
 		initClientConnectionManager();
-		
+
 		//intiate mob respawn thread
 		Logger.info("Starting Mob Respawn Thread");
 		MobRespawnThread.startRespawnThread();
@@ -550,11 +551,10 @@ public class WorldServer {
 		}
 
 		//Set sea floor object for server
+
 		Zone seaFloor = rootParent.get(0);
 		seaFloor.setParent(null);
 		ZoneManager.setSeaFloor(seaFloor);
-
-		//  zoneManager.addZone(seaFloor.getLoadNum(), seaFloor); <- DIE IN A FUCKING CAR FIRE BONUS CODE LIKE THIS SUCKS FUCKING DICK
 
 		rootParent.addAll(DbManager.ZoneQueries.GET_ALL_NODES(seaFloor));
 
@@ -562,32 +562,29 @@ public class WorldServer {
 
 		for (Zone zone : rootParent) {
 
+			ZoneManager.addZone(zone.getLoadNum(), zone);
+			zone.generateWorldAltitude();
+
+
+			//Handle Buildings
+
 			try {
-				ZoneManager.addZone(zone.getLoadNum(), zone);
-
-				try {
-					zone.generateWorldAltitude();
-				} catch (Exception e) {
-					Logger.error(e.getMessage());
-					e.printStackTrace();
-				}
-
-				//Handle Buildings
-
 				ArrayList<Building> bList;
 				bList = DbManager.BuildingQueries.GET_ALL_BUILDINGS_FOR_ZONE(zone);
 
 				for (Building b : bList) {
 
-					try {
-						b.setObjectTypeMask(MBServerStatics.MASK_BUILDING);
-						b.setLoc(b.getLoc());
-					} catch (Exception e) {
-						Logger.error(b.getObjectUUID() + " returned an Error Message :" + e.getMessage());
-					}
+					b.setObjectTypeMask(MBServerStatics.MASK_BUILDING);
+					b.setLoc(b.getLoc());
 				}
+			} catch (Exception e) {
+				Logger.error(e);
+				e.printStackTrace();
+			}
 
-				//Handle Mobs
+			//Handle Mobs
+
+			try {
 				ArrayList<Mob> mobs;
 				mobs = DbManager.MobQueries.GET_ALL_MOBS_FOR_ZONE(zone);
 
@@ -600,11 +597,17 @@ public class WorldServer {
 					if (m.building != null && m.building.getBlueprint() != null && m.building.getBlueprint().getBuildingGroup() == Enum.BuildingGroup.BARRACK)
 						DbManager.MobQueries.LOAD_GUARD_MINIONS(m);
 				}
+			} catch (Exception e) {
+				Logger.error(e);
+				e.printStackTrace();
+			}
 
-				//Handle npc's
+			//Handle NPCs
+
+			try {
 				ArrayList<NPC> npcs;
 
-				// Ignore npc's on the seafloor (npc guild leaders, etc)
+				// Ignore NPCs on the seafloor (npc guild leaders, etc)
 
 				if (zone.equals(seaFloor))
 					continue;
@@ -612,26 +615,22 @@ public class WorldServer {
 				npcs = DbManager.NPCQueries.GET_ALL_NPCS_FOR_ZONE(zone);
 
 				for (NPC n : npcs) {
-
-					try {
-						n.setObjectTypeMask(MBServerStatics.MASK_NPC);
-						n.setLoc(n.getLoc());
-					} catch (Exception e) {
-						Logger.error(n.getObjectUUID() + " returned an Error Message :" + e.getMessage());
-					}
+					n.setObjectTypeMask(MBServerStatics.MASK_NPC);
+					n.setLoc(n.getLoc());
 				}
 
-				//Handle cities
-
-				ZoneManager.loadCities(zone);
-				ZoneManager.populateWorldZones(zone);
-
 			} catch (Exception e) {
-				Logger.info(e.getMessage() + zone.getName() + ' ' + zone.getObjectUUID());
+				Logger.error(e);
+				e.printStackTrace();
 			}
+			//Handle cities
+
+			ZoneManager.loadCities(zone);
+			ZoneManager.populateWorldZones(zone);
+
 		}
 
-		Logger.info("time to load: " + (System.currentTimeMillis() - start) + " ms");
+		Logger.info("time to load World Objects: " + (System.currentTimeMillis() - start) + " ms");
 	}
 
 	/**
@@ -704,7 +703,7 @@ public class WorldServer {
 			return;
 		}
 		//remove player from loaded mobs agro maps
-		for(AbstractWorldObject awo : WorldGrid.getObjectsInRangePartial(player.getLoc(),MBServerStatics.CHARACTER_LOAD_RANGE,MBServerStatics.MASK_MOB)) {
+		for (AbstractWorldObject awo : WorldGrid.getObjectsInRangePartial(player.getLoc(), MBServerStatics.CHARACTER_LOAD_RANGE, MBServerStatics.MASK_MOB)) {
 			Mob loadedMob = (Mob) awo;
 			loadedMob.playerAgroMap.remove(player.getObjectUUID());
 		}
