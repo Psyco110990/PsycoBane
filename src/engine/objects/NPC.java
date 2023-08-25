@@ -806,6 +806,8 @@ public class NPC extends AbstractCharacter {
     @Override
     public void runAfterLoad() {
 
+        this.charItemManager = new CharacterItemManager(this);
+
         if (ConfigManager.serverType.equals(ServerType.LOGINSERVER))
             return;
 
@@ -846,10 +848,6 @@ public class NPC extends AbstractCharacter {
 
         if (wordCount(this.name) < 2 && this.contract != null)
             this.name += " the " + this.contract.getName();
-
-        // Initialize inventory
-
-        this.charItemManager = new CharacterItemManager(this);
 
         // Configure parent zone adding this NPC to the
         // zone collection

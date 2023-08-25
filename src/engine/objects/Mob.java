@@ -1751,6 +1751,8 @@ public class Mob extends AbstractIntelligenceAgent {
     @Override
     public void runAfterLoad() {
 
+        this.charItemManager = new CharacterItemManager(this);
+
         if (ConfigManager.serverType.equals(ServerType.LOGINSERVER))
             return;
 
@@ -1866,7 +1868,6 @@ public class Mob extends AbstractIntelligenceAgent {
 
         // Initialize inventory
 
-        this.charItemManager = new CharacterItemManager(this);
         this.charItemManager.load();
         this.loadInventory();
 
