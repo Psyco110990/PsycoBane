@@ -56,20 +56,20 @@ public class aiInfoCmd extends AbstractDevCmd {
         Mob mob = (Mob) target;
         output = "Mob AI Information:" + newline;
         output += mob.getName() + newline;
-        if (mob.BehaviourType != null) {
-            output += "BehaviourType: " + mob.BehaviourType.toString() + newline;
-            if (mob.BehaviourType.BehaviourHelperType != null) {
-                output += "Behaviour Helper Type: " + mob.BehaviourType.BehaviourHelperType.toString() + newline;
+        if (mob.behaviourType != null) {
+            output += "BehaviourType: " + mob.behaviourType.toString() + newline;
+            if (mob.behaviourType.BehaviourHelperType != null) {
+                output += "Behaviour Helper Type: " + mob.behaviourType.BehaviourHelperType.toString() + newline;
             } else {
                 output += "Behaviour Helper Type: NULL" + newline;
-                }
-                output += "Wimpy: " + mob.BehaviourType.isWimpy + newline;
-                output += "Agressive: " + mob.BehaviourType.isAgressive + newline;
-                output += "Can Roam: " + mob.BehaviourType.canRoam + newline;
-                output += "Calls For Help: " + mob.BehaviourType.callsForHelp + newline;
-                output += "Responds To Call For Help: " + mob.BehaviourType.respondsToCallForHelp + newline;
-            } else {
-                output += "BehaviourType: NULL" + newline;
+            }
+            output += "Wimpy: " + mob.behaviourType.isWimpy + newline;
+            output += "Agressive: " + mob.behaviourType.isAgressive + newline;
+            output += "Can Roam: " + mob.behaviourType.canRoam + newline;
+            output += "Calls For Help: " + mob.behaviourType.callsForHelp + newline;
+            output += "Responds To Call For Help: " + mob.behaviourType.respondsToCallForHelp + newline;
+        } else {
+            output += "BehaviourType: NULL" + newline;
             }
             output += "Aggro Range: " + mob.getAggroRange() + newline;
             output += "Player Aggro Map Size: " + mob.playerAgroMap.size() + newline;

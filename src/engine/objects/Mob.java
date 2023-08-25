@@ -71,7 +71,7 @@ public class Mob extends AbstractIntelligenceAgent {
     public int bootySet = 0;
     public EnumBitSet<MonsterType> notEnemy;
     public EnumBitSet<Enum.MonsterType> enemy;
-    public MobBehaviourType BehaviourType;
+    public MobBehaviourType behaviourType;
     public ArrayList<Vector3fImmutable> patrolPoints;
     public int lastPatrolPointIndex = 0;
     public long stopPatrolTime = 0;
@@ -144,7 +144,7 @@ public class Mob extends AbstractIntelligenceAgent {
         this.parentZone = parent;
         this.parentZoneUUID = (parent != null) ? parent.getObjectUUID() : 0;
         this.ownerUID = owner.getObjectUUID();
-        this.BehaviourType = Enum.MobBehaviourType.Pet1;
+        this.behaviourType = Enum.MobBehaviourType.Pet1;
         clearStatic();
     }
 
@@ -217,7 +217,7 @@ public class Mob extends AbstractIntelligenceAgent {
             this.firstName = rs.getString("mob_name");
 
             if (rs.getString("fsm").length() > 1)
-                this.BehaviourType = MobBehaviourType.valueOf(rs.getString("fsm"));
+                this.behaviourType = MobBehaviourType.valueOf(rs.getString("fsm"));
 
             if (this.isPet() || this.isSiege || (this.isPlayerGuard && this.contract == null))
                 this.currentID = (--Mob.staticID);
@@ -659,8 +659,10 @@ public class Mob extends AbstractIntelligenceAgent {
         minionMobile.deathTime = System.currentTimeMillis();
         minionMobile.npcOwner = guardCaptain;
         minionMobile.spawnTime = (int) (-2.500 * guardCaptain.building.getRank() + 22.5) * 60;
-        minionMobile.BehaviourType = Enum.MobBehaviourType.GuardMinion;
+        minionMobile.behaviourType = Enum.MobBehaviourType.GuardMinion;
+        minionMobile.isPlayerGuard = true;
         minionMobile.guardedCity = guardCaptain.guardedCity;
+
         minionMobile.parentZoneUUID = guardCaptain.parentZoneUUID;
         minionMobile.bindLoc = guardCaptain.bindLoc;
 
@@ -732,8 +734,8 @@ public class Mob extends AbstractIntelligenceAgent {
         owner.getSiegeMinionMap().put(mob, slot);
 
         mob.setNpcOwner(owner);
-        mob.BehaviourType = MobBehaviourType.Pet1;
-        mob.BehaviourType.canRoam = false;
+        mob.behaviourType = MobBehaviourType.Pet1;
+        mob.behaviourType.canRoam = false;
         return mob;
     }
 
@@ -1056,7 +1058,7 @@ public class Mob extends AbstractIntelligenceAgent {
                 this.hasLoot = false;
                 this.playerAgroMap.clear();
 
-                if (this.BehaviourType.ordinal() == Enum.MobBehaviourType.GuardMinion.ordinal())
+                if (this.behaviourType.ordinal() == Enum.MobBehaviourType.GuardMinion.ordinal())
                     this.spawnTime = (int) (-2.500 * ((Mob) this.npcOwner).building.getRank() + 22.5) * 60;
 
                 if (this.isPet()) {
@@ -1146,7 +1148,7 @@ public class Mob extends AbstractIntelligenceAgent {
         this.recalculateStats();
         this.setHealth(this.healthMax);
 
-        if (this.building == null && this.npcOwner != null && ((Mob) this.npcOwner).BehaviourType.ordinal() == MobBehaviourType.GuardCaptain.ordinal())
+        if (this.building == null && this.npcOwner != null && ((Mob) this.npcOwner).behaviourType.ordinal() == MobBehaviourType.GuardCaptain.ordinal())
             this.building = ((Mob) this.npcOwner).building;
         else if (this.building != null)
             this.region = BuildingManager.GetRegion(this.building, bindLoc.x, bindLoc.y, bindLoc.z);
@@ -1706,7 +1708,9 @@ public class Mob extends AbstractIntelligenceAgent {
         else
             this.contract = DbManager.ContractQueries.GET_CONTRACT(this.contractUUID);
 
-        if (this.contract != null && NPC.ISGuardCaptain(contract.getContractID())) {
+        // Guard captaiin AI
+
+        if (NPC.ISGuardCaptain(contract.getContractID())) {
             this.spawnTime = 60 * 15;
             this.isPlayerGuard = true;
         }
@@ -1714,7 +1718,7 @@ public class Mob extends AbstractIntelligenceAgent {
         // Load AI for wall archers
 
         if (this.contract != null && NPC.ISWallArcher(this.contract)) {
-            this.BehaviourType = MobBehaviourType.GuardWallArcher;
+            this.behaviourType = MobBehaviourType.GuardWallArcher;
             this.isPlayerGuard = true;
             this.spawnTime = 450;
         }
@@ -1854,7 +1858,7 @@ public class Mob extends AbstractIntelligenceAgent {
 
             if (this.contract != null && this.contract.getContractID() == 910) {
                 this.isPlayerGuard = true;
-                this.BehaviourType = MobBehaviourType.GuardCaptain;
+                this.behaviourType = MobBehaviourType.GuardCaptain;
                 this.spawnTime = 900;
                 this.guardedCity = ZoneManager.getCityAtLocation(this.bindLoc);
             }
@@ -1880,15 +1884,15 @@ public class Mob extends AbstractIntelligenceAgent {
                 }
             }
 
-            if (this.BehaviourType == null)
-                this.BehaviourType = this.getMobBase().fsm;
+            if (this.behaviourType == null)
+                this.behaviourType = this.getMobBase().fsm;
 
             if (this.isPlayerGuard() && this.contract != null)
                 if (NPC.ISWallArcher(this.getContract())) {
-                    this.BehaviourType = MobBehaviourType.GuardWallArcher;
+                    this.behaviourType = MobBehaviourType.GuardWallArcher;
                     this.spawnTime = 450;
                 } else {
-                    this.BehaviourType = MobBehaviourType.GuardCaptain;
+                    this.behaviourType = MobBehaviourType.GuardCaptain;
                     this.spawnTime = 900;
                     this.guardedCity = ZoneManager.getCityAtLocation(this.bindLoc);
                 }

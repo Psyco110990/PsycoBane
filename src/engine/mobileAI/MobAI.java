@@ -96,7 +96,7 @@ public class MobAI {
                 return;
             }
 
-            if (mob.BehaviourType.callsForHelp)
+            if (mob.behaviourType.callsForHelp)
                 MobCallForHelp(mob);
 
             if (!MovementUtilities.inRangeDropAggro(mob, target)) {
@@ -165,7 +165,7 @@ public class MobAI {
 
             if (playercity != null)
                 for (Mob guard : playercity.getParent().zoneMobSet)
-                    if (guard.BehaviourType != null && guard.BehaviourType.equals(Enum.MobBehaviourType.GuardCaptain))
+                    if (guard.behaviourType != null && guard.behaviourType.equals(Enum.MobBehaviourType.GuardCaptain))
                         if (guard.getCombatTarget() == null && !guard.getGuild().equals(mob.getGuild()))
                             guard.setCombatTarget(mob);
 
@@ -260,7 +260,7 @@ public class MobAI {
 
             //guard captains inherit barracks patrol points dynamically
 
-            if (mob.BehaviourType.equals(Enum.MobBehaviourType.GuardCaptain)) {
+            if (mob.behaviourType.equals(Enum.MobBehaviourType.GuardCaptain)) {
 
                 Building barracks = mob.building;
 
@@ -280,7 +280,7 @@ public class MobAI {
 
             MovementUtilities.aiMove(mob, mob.destination, true);
 
-            if (mob.BehaviourType.equals(Enum.MobBehaviourType.GuardCaptain))
+            if (mob.behaviourType.equals(Enum.MobBehaviourType.GuardCaptain))
                 for (Entry<Mob, Integer> minion : mob.siegeMinionMap.entrySet())
 
                     //make sure mob is out of combat stance
@@ -312,9 +312,9 @@ public class MobAI {
 
                 int contractID;
 
-                if(mob.BehaviourType.equals(Enum.MobBehaviourType.GuardMinion))
+                if (mob.behaviourType.equals(Enum.MobBehaviourType.GuardMinion))
                     contractID = mob.npcOwner.contract.getContractID();
-                 else
+                else
                     contractID = mob.contract.getContractID();
 
                 if(Enum.MinionType.ContractToMinionMap.get(contractID).isMage() == false)
@@ -350,7 +350,7 @@ public class MobAI {
             ArrayList<Integer> purgeTokens;
             AbstractCharacter target = (AbstractCharacter) mob.getCombatTarget();
 
-            if (mob.BehaviourType.callsForHelp)
+            if (mob.behaviourType.callsForHelp)
                 MobCallForHelp(mob);
 
             // Generate a list of tokens from the mob powers for this mobile.
@@ -433,7 +433,7 @@ public class MobAI {
             ArrayList<Integer> purgeTokens;
             AbstractCharacter target = (AbstractCharacter) mob.getCombatTarget();
 
-            if (mob.BehaviourType.callsForHelp)
+            if (mob.behaviourType.callsForHelp)
                 MobCallForHelp(mob);
 
             // Generate a list of tokens from the mob powers for this mobile.
@@ -564,7 +564,7 @@ public class MobAI {
             Zone mobCamp = mob.getParentZone();
 
             for (Mob helper : mobCamp.zoneMobSet) {
-                if (helper.BehaviourType.respondsToCallForHelp && helper.BehaviourType.BehaviourHelperType.equals(mob.BehaviourType)) {
+                if (helper.behaviourType.respondsToCallForHelp && helper.behaviourType.BehaviourHelperType.equals(mob.behaviourType)) {
                     helper.setCombatTarget(mob.getCombatTarget());
                     callGotResponse = true;
                 }
@@ -608,7 +608,7 @@ public class MobAI {
 
             if (mob.despawned && mob.isPlayerGuard) {
 
-                if (mob.BehaviourType.equals(Enum.MobBehaviourType.GuardMinion)) {
+                if (mob.behaviourType.equals(Enum.MobBehaviourType.GuardMinion)) {
                     if (mob.npcOwner.isAlive() == false || ((Mob) mob.npcOwner).despawned == true) {
 
                         //minions don't respawn while guard captain is dead
@@ -625,7 +625,7 @@ public class MobAI {
 
                 //check to send mob home for player guards to prevent exploit of dragging guards away and then teleporting
 
-                if (mob.BehaviourType.equals(Enum.MobBehaviourType.Pet1) == false)
+                if (mob.behaviourType.equals(Enum.MobBehaviourType.Pet1) == false)
                     CheckToSendMobHome(mob);
 
                 return;
@@ -646,7 +646,7 @@ public class MobAI {
                 return;
             }
 
-            if (mob.BehaviourType.equals(Enum.MobBehaviourType.Pet1) == false)
+            if (mob.behaviourType.equals(Enum.MobBehaviourType.Pet1) == false)
                 CheckToSendMobHome(mob);
 
             if (mob.getCombatTarget() != null) {
@@ -673,7 +673,7 @@ public class MobAI {
                 }
             }
 
-            switch (mob.BehaviourType) {
+            switch (mob.behaviourType) {
                 case GuardCaptain:
                     GuardCaptainLogic(mob);
                     break;
@@ -782,7 +782,7 @@ public class MobAI {
 
             mob.updateLocation();
 
-            switch (mob.BehaviourType) {
+            switch (mob.behaviourType) {
 
                 case Pet1:
                     if (mob.getOwner() == null)
@@ -894,7 +894,7 @@ public class MobAI {
                 return;
 
             if (mob.getCombatTarget().getObjectType().equals(Enum.GameObjectType.PlayerCharacter) && MovementUtilities.inRangeDropAggro(mob, (PlayerCharacter) mob.getCombatTarget()) == false &&
-                    mob.BehaviourType.equals(Enum.MobBehaviourType.Pet1) == false) {
+                    mob.behaviourType.equals(Enum.MobBehaviourType.Pet1) == false) {
 
                 mob.setCombatTarget(null);
                 return;
@@ -910,10 +910,10 @@ public class MobAI {
     private static void CheckToSendMobHome(Mob mob) {
 
         try {
-            if (mob.BehaviourType.isAgressive) {
+            if (mob.behaviourType.isAgressive) {
 
                 if (mob.isPlayerGuard()) {
-                    if (mob.BehaviourType.equals(Enum.MobBehaviourType.GuardCaptain))
+                    if (mob.behaviourType.equals(Enum.MobBehaviourType.GuardCaptain))
                         CheckForPlayerGuardAggro(mob);
                 } else {
                     CheckForAggro(mob);
@@ -933,7 +933,7 @@ public class MobAI {
                     PowersManager.useMobPower(mob, mob, recall, 40);
                     mob.setCombatTarget(null);
 
-                    if (mob.BehaviourType.equals(Enum.MobBehaviourType.GuardCaptain) && mob.isAlive()) {
+                    if (mob.behaviourType.equals(Enum.MobBehaviourType.GuardCaptain) && mob.isAlive()) {
 
                         //guard captain pulls his minions home with him
 
@@ -1014,7 +1014,7 @@ public class MobAI {
                 if ((aggroMob.agentType.equals(Enum.AIAgentType.GUARD)))
                     continue;
 
-                if (aggroMob.BehaviourType.equals(Enum.MobBehaviourType.Pet1))
+                if (aggroMob.behaviourType.equals(Enum.MobBehaviourType.Pet1))
                     continue;
 
                 if (mob.getLoc().distanceSquared2D(aggroMob.getLoc()) > sqr(50))
@@ -1107,7 +1107,7 @@ public class MobAI {
                 if (ZoneManager.getSeaFloor().zoneMobSet.contains(mob))
                     mob.killCharacter("no owner");
 
-            if (MovementUtilities.canMove(mob) && mob.BehaviourType.canRoam)
+            if (MovementUtilities.canMove(mob) && mob.behaviourType.canRoam)
                 CheckMobMovement(mob);
 
             CheckForAttack(mob);
@@ -1157,7 +1157,7 @@ public class MobAI {
             if (mob.getCombatTarget() != null && mob.playerAgroMap.containsKey(mob.getCombatTarget().getObjectUUID()) == false)
                 mob.setCombatTarget(null);
 
-            if (mob.BehaviourType.isAgressive) {
+            if (mob.behaviourType.isAgressive) {
 
                 AbstractWorldObject newTarget = ChangeTargetFromHateValue(mob);
 
@@ -1165,7 +1165,7 @@ public class MobAI {
                     mob.setCombatTarget(newTarget);
                 else {
                     if (mob.getCombatTarget() == null) {
-                        if (mob.BehaviourType == Enum.MobBehaviourType.HamletGuard)
+                        if (mob.behaviourType == Enum.MobBehaviourType.HamletGuard)
                             SafeGuardAggro(mob);  //safehold guard
                         else
                             CheckForAggro(mob);   //normal aggro
@@ -1175,12 +1175,12 @@ public class MobAI {
 
             //check if mob can move for patrol or moving to target
 
-            if (mob.BehaviourType.canRoam)
+            if (mob.behaviourType.canRoam)
                 CheckMobMovement(mob);
 
             //check if mob can attack if it isn't wimpy
 
-            if (!mob.BehaviourType.isWimpy && mob.getCombatTarget() != null)
+            if (!mob.behaviourType.isWimpy && mob.getCombatTarget() != null)
                 CheckForAttack(mob);
 
         } catch (Exception e) {
@@ -1245,7 +1245,7 @@ public class MobAI {
             if (mob.getGuild().getNation().equals(target.getGuild().getNation()))
                 return false;
 
-            if (mob.BehaviourType.equals(Enum.MobBehaviourType.GuardMinion)) {
+            if (mob.behaviourType.equals(Enum.MobBehaviourType.GuardMinion)) {
                 if (((Mob) mob.npcOwner).building.getCity().cityOutlaws.contains(target.getObjectUUID()) == true) {
                     return true;
                 }
@@ -1330,7 +1330,7 @@ public class MobAI {
 
             MovementUtilities.aiMove(mob, mob.destination, true);
 
-            if (mob.BehaviourType.equals(Enum.MobBehaviourType.GuardCaptain)) {
+            if (mob.behaviourType.equals(Enum.MobBehaviourType.GuardCaptain)) {
                 for (Entry<Mob, Integer> minion : mob.siegeMinionMap.entrySet()) {
 
                     //make sure mob is out of combat stance
