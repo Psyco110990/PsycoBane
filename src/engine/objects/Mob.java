@@ -664,12 +664,7 @@ public class Mob extends AbstractIntelligenceAgent {
         minionMobile.parentZoneUUID = guardCaptain.parentZoneUUID;
         minionMobile.bindLoc = guardCaptain.bindLoc;
 
-        minionMobile.runAfterLoad();
-        minionMobile.despawned = true;
-        minionMobile.setLoc(minionMobile.bindLoc);
-        minionMobile.despawn();
-
-        //grab equipment and name from minionbase.
+        //grab name from minionbase.
 
         Enum.MinionType minionType = Enum.MinionType.ContractToMinionMap.get(guardCaptain.contract.getContractID());
 
@@ -686,7 +681,15 @@ public class Mob extends AbstractIntelligenceAgent {
                 rank = MBServerStatics.ELITE;
 
             minionMobile.lastName = rank + " " + minionType.getRace() + " " + minionType.getName();
+
         }
+
+        // Configure and spawn minion
+
+        minionMobile.runAfterLoad();
+        minionMobile.despawned = true;
+        minionMobile.setLoc(minionMobile.bindLoc);
+        minionMobile.despawn();
 
         DbManager.addToCache(minionMobile);
 
