@@ -491,7 +491,6 @@ public class Mob extends AbstractIntelligenceAgent {
 
         try {
             mob = DbManager.MobQueries.ADD_MOB(mobile);
-            mob.setObjectTypeMask(MBServerStatics.MASK_MOB | mob.getTypeMasks());
 
         } catch (Exception e) {
             Logger.error("SQLException:" + e.getMessage());
