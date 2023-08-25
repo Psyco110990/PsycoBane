@@ -489,7 +489,10 @@ public class Mob extends AbstractIntelligenceAgent {
 
         mobile.firstName = pirateName;
 
-        mobile.contractUUID = contract.getContractID();
+        if (contract == null)
+            mobile.contractUUID = 0;
+        else
+            mobile.contractUUID = contract.getContractID();
 
         Mob mob;
 
