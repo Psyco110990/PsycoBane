@@ -730,6 +730,9 @@ public class Mob extends AbstractIntelligenceAgent {
         if (guardCaptain.equipmentSetID != 0)
             mob.equipmentSetID = guardCaptain.equipmentSetID;
 
+        mob.enemy = guardCaptain.enemy;
+        mob.notEnemy = guardCaptain.notEnemy;
+
         mob.runAfterLoad();
         mob.despawned = true;
         mob.despawn();
