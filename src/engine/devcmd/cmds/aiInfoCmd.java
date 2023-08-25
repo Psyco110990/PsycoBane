@@ -84,6 +84,9 @@ public class aiInfoCmd extends AbstractDevCmd {
         else
             output += "Current Target: NULL" + newline;
 
+        if (mob.guardedCity != null)
+            output += mob.guardedCity.getCityName() + newline;
+
         for (int token : mob.mobPowers.keySet())
             output += token + newline;
 

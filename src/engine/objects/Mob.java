@@ -1696,6 +1696,7 @@ public class Mob extends AbstractIntelligenceAgent {
             if (NPC.ISGuardCaptain(contract.getContractID())) {
                 this.spawnTime = 60 * 15;
                 this.isPlayerGuard = true;
+                this.guardedCity = ZoneManager.getCityAtLocation(this.building.getLoc());
             }
 
             // Load AI for wall archers
@@ -1704,6 +1705,7 @@ public class Mob extends AbstractIntelligenceAgent {
                 this.behaviourType = MobBehaviourType.GuardWallArcher;
                 this.isPlayerGuard = true;
                 this.spawnTime = 450;
+                this.guardedCity = ZoneManager.getCityAtLocation(this.building.getLoc());
             }
 
             // Load AI for guard dogs
@@ -1712,7 +1714,7 @@ public class Mob extends AbstractIntelligenceAgent {
                 this.isPlayerGuard = true;
                 this.behaviourType = MobBehaviourType.GuardCaptain;
                 this.spawnTime = 900;
-                this.guardedCity = ZoneManager.getCityAtLocation(this.bindLoc);
+                this.guardedCity = ZoneManager.getCityAtLocation(this.building.getLoc());
             }
         }
 
