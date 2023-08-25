@@ -81,7 +81,7 @@ public class Mob extends AbstractIntelligenceAgent {
     protected int loadID;
     protected float spawnRadius;
     //used by static mobs
-    protected int parentZoneID;
+    protected int parentZoneUUID;
     protected float statLat;
     protected float statLon;
     protected float statAlt;
@@ -116,7 +116,7 @@ public class Mob extends AbstractIntelligenceAgent {
         this.mobBase = MobBase.getMobBase(loadID);
         this.dbID = MBServerStatics.NO_DB_ROW_ASSIGNED_YET;
         this.parentZone = parent;
-        this.parentZoneID = (parent != null) ? parent.getObjectUUID() : 0;
+        this.parentZoneUUID = (parent != null) ? parent.getObjectUUID() : 0;
         this.building = building;
 
         if (building != null)
@@ -143,7 +143,7 @@ public class Mob extends AbstractIntelligenceAgent {
         this.loadID = mobBase.getObjectUUID();
         this.mobBase = mobBase;
         this.parentZone = parent;
-        this.parentZoneID = (parent != null) ? parent.getObjectUUID() : 0;
+        this.parentZoneUUID = (parent != null) ? parent.getObjectUUID() : 0;
         this.ownerUID = owner.getObjectUUID();
         this.BehaviourType = Enum.MobBehaviourType.Pet;
         clearStatic();
@@ -156,7 +156,7 @@ public class Mob extends AbstractIntelligenceAgent {
         this.loadID = mobBase.getObjectUUID();
         this.mobBase = mobBase;
         this.parentZone = parent;
-        this.parentZoneID = (parent != null) ? parent.getObjectUUID() : 0;
+        this.parentZoneUUID = (parent != null) ? parent.getObjectUUID() : 0;
         this.ownerUID = 0;
         this.equip = new HashMap<>();
         clearStatic();
@@ -181,7 +181,7 @@ public class Mob extends AbstractIntelligenceAgent {
 
             this.localLoc = new Vector3fImmutable(this.statLat, this.statAlt, this.statLon);
 
-            this.parentZoneID = rs.getInt("parent");
+            this.parentZoneUUID = rs.getInt("parent");
             this.level = (short) rs.getInt("mob_level");
 
             this.buildingUUID = rs.getInt("mob_buildingID");
@@ -469,6 +469,21 @@ public class Mob extends AbstractIntelligenceAgent {
 
     public static Mob createMob(int loadID, Vector3fImmutable spawn, Guild guild, boolean isMob, Zone parent, Building building, int contractID, String pirateName, int level) {
 
+        Mob mobile = new Mob();
+        mobile.dbID = MBServerStatics.NO_DB_ROW_ASSIGNED_YET;
+        mobile.loadID = loadID;
+
+        if (guild.isEmptyGuild())
+            mobile.guildUUID = 0;
+        else
+            mobile.guildUUID = guild.getObjectUUID();
+
+        mobile.parentZoneUUID = parent.getObjectUUID();
+        mobile.buildingUUID = building.getObjectUUID();
+        mobile.firstName = pirateName;
+        mobile.bindLoc = spawn;
+
+
         Mob mobWithoutID = new Mob(pirateName, "", (short) 0, (short) 0, (short) 0, (short) 0, (short) 0, (short) 1, 0, false, false, false, spawn, spawn, Vector3fImmutable.ZERO, (short) 1, (short) 1, (short) 1, guild, (byte) 0, loadID, isMob, parent, building, contractID);
 
         if (mobWithoutID.mobBase == null)
@@ -480,7 +495,7 @@ public class Mob extends AbstractIntelligenceAgent {
         // refactor that out and just use the id.
 
         mobWithoutID.parentZone = parent;
-        mobWithoutID.parentZoneID = parent.getObjectUUID();
+        mobWithoutID.parentZoneUUID = parent.getObjectUUID();
 
         // NPC in a Building derives position from slot
 
@@ -883,7 +898,7 @@ public class Mob extends AbstractIntelligenceAgent {
         return this.parentZone;
     }
 
-    public int getParentZoneID() {
+    public int getParentZoneUUID() {
 
         if (this.parentZone != null)
             return this.parentZone.getObjectUUID();
@@ -1837,7 +1852,7 @@ public class Mob extends AbstractIntelligenceAgent {
         // Configure parent zone adding this NPC to the
         // zone collection
 
-        this.parentZone = ZoneManager.getZoneByUUID(this.parentZoneID);
+        this.parentZone = ZoneManager.getZoneByUUID(this.parentZoneUUID);
         this.parentZone.zoneMobSet.remove(this);
         this.parentZone.zoneMobSet.add(this);
 

@@ -35,7 +35,7 @@ public class dbMobHandler extends dbHandlerBase {
         try (Connection connection = DbManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("CALL `mob_CREATE`(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);")) {
 
-            preparedStatement.setLong(1, toAdd.getParentZoneID());
+            preparedStatement.setLong(1, toAdd.getParentZoneUUID());
             preparedStatement.setInt(2, toAdd.getMobBaseID());
             preparedStatement.setInt(3, toAdd.getGuildUUID());
             preparedStatement.setFloat(4, toAdd.getSpawnX());

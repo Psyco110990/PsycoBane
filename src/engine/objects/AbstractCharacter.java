@@ -119,14 +119,31 @@ public abstract class AbstractCharacter extends AbstractWorldObject {
     private long takeOffTime = 0;
     private float hateValue = 0;
     private long lastHateUpdate = 0;
-    private boolean collided = false;
     private byte aoecntr = 0;
 
     public AbstractCharacter() {
         super();
+        this.firstName = "";
+        this.lastName = "";
 
-        this.powers = new ConcurrentHashMap<>(MBServerStatics.CHM_INIT_CAP, MBServerStatics.CHM_LOAD, MBServerStatics.CHM_THREAD_LOW);
-        this.skills = new ConcurrentHashMap<>(MBServerStatics.CHM_INIT_CAP, MBServerStatics.CHM_LOAD, MBServerStatics.CHM_THREAD_LOW);
+        this.statStrCurrent = (short) 0;
+        this.statDexCurrent = (short) 0;
+        this.statConCurrent = (short) 0;
+        this.statIntCurrent = (short) 0;
+        this.statSpiCurrent = (short) 0;
+
+        this.unusedStatPoints = (short) 0;
+
+        this.level = (short) 0; // TODO get this from MobsBase later
+        this.exp = 1;
+        this.walkMode = true;
+        this.bindLoc = Vector3fImmutable.ZERO;
+        this.faceDir = Vector3fImmutable.ZERO;
+
+        this.runningTrains = (byte) 0;
+
+        this.skills = new ConcurrentHashMap<>();
+        this.powers = new ConcurrentHashMap<>();
         this.initializeCharacter();
 
     }
@@ -291,8 +308,6 @@ public abstract class AbstractCharacter extends AbstractWorldObject {
         this.powers = new ConcurrentHashMap<>();
         initializeCharacter();
 
-        // Dangerous to use THIS in a constructor!!!
-        this.charItemManager = new CharacterItemManager(this);
     }
 
     /**
