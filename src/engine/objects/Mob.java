@@ -680,10 +680,10 @@ public class Mob extends AbstractIntelligenceAgent {
 
         minionMobile.runAfterLoad();
         minionMobile.despawned = false;
+        DbManager.addToCache(minionMobile);
+
         minionMobile.setLoc(minionMobile.bindLoc);
         // minionMobile.despawn();
-
-        DbManager.addToCache(minionMobile);
 
         int slot = guardCaptain.siegeMinionMap.size() + 1;
         guardCaptain.siegeMinionMap.put(minionMobile, slot);
