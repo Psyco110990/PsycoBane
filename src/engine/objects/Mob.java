@@ -1734,8 +1734,11 @@ public class Mob extends AbstractIntelligenceAgent {
             this.firstName = this.mobBase.getFirstName();
 
         if (this.contract != null) {
+
             this.equipmentSetID = this.contract.getEquipmentSet();
-            this.lastName = this.getContract().getName();
+
+            if (this.lastName.isEmpty())
+                this.lastName = this.getContract().getName();
         }
 
         this.gridObjectType = GridObjectType.DYNAMIC;
@@ -1746,8 +1749,11 @@ public class Mob extends AbstractIntelligenceAgent {
         this.mana.set(this.manaMax);
         this.stamina.set(this.staminaMax);
 
+        // Don't override level for guard minions
+
         if (this.contract == null)
-            this.level = (short) this.mobBase.getLevel();
+            if (!this.behaviourType.equals(MobBehaviourType.GuardMinion))
+                this.level = (short) this.mobBase.getLevel();
 
         //set bonuses
 
