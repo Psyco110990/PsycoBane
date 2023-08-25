@@ -625,7 +625,7 @@ public class MobAI {
 
                 //check to send mob home for player guards to prevent exploit of dragging guards away and then teleporting
 
-                if (mob.BehaviourType.equals(Enum.MobBehaviourType.Pet1) == false)
+                if (mob.BehaviourType.equals(Enum.MobBehaviourType.Pet) == false)
                     CheckToSendMobHome(mob);
 
                 return;
@@ -646,7 +646,7 @@ public class MobAI {
                 return;
             }
 
-            if (mob.BehaviourType.equals(Enum.MobBehaviourType.Pet1) == false)
+            if (mob.BehaviourType.equals(Enum.MobBehaviourType.Pet) == false)
                 CheckToSendMobHome(mob);
 
             if (mob.getCombatTarget() != null) {
@@ -683,7 +683,7 @@ public class MobAI {
                 case GuardWallArcher:
                     GuardWallArcherLogic(mob);
                     break;
-                case Pet1:
+                case Pet:
                     PetLogic(mob);
                     break;
                 case HamletGuard:
@@ -784,7 +784,7 @@ public class MobAI {
 
             switch (mob.BehaviourType) {
 
-                case Pet1:
+                case Pet:
                     if (mob.getOwner() == null)
                         return;
 
@@ -894,7 +894,7 @@ public class MobAI {
                 return;
 
             if (mob.getCombatTarget().getObjectType().equals(Enum.GameObjectType.PlayerCharacter) && MovementUtilities.inRangeDropAggro(mob, (PlayerCharacter) mob.getCombatTarget()) == false &&
-                    mob.BehaviourType.equals(Enum.MobBehaviourType.Pet1) == false) {
+                    mob.BehaviourType.equals(Enum.MobBehaviourType.Pet) == false) {
 
                 mob.setCombatTarget(null);
                 return;
@@ -1014,7 +1014,7 @@ public class MobAI {
                 if ((aggroMob.agentType.equals(Enum.AIAgentType.GUARD)))
                     continue;
 
-                if(aggroMob.BehaviourType.equals(Enum.MobBehaviourType.Pet1))
+                if (aggroMob.BehaviourType.equals(Enum.MobBehaviourType.Pet))
                     continue;
 
                 if (mob.getLoc().distanceSquared2D(aggroMob.getLoc()) > sqr(50))

@@ -164,7 +164,7 @@ public class Mob extends AbstractIntelligenceAgent {
         this.parentZone = parent;
         this.parentZoneID = (parent != null) ? parent.getObjectUUID() : 0;
         this.ownerUID = owner.getObjectUUID();
-        this.BehaviourType = Enum.MobBehaviourType.Pet1;
+        this.BehaviourType = Enum.MobBehaviourType.Pet;
         clearStatic();
     }
 
@@ -811,7 +811,7 @@ public class Mob extends AbstractIntelligenceAgent {
         owner.getSiegeMinionMap().put(mob, slot);
 
         mob.setNpcOwner(owner);
-        mob.BehaviourType = MobBehaviourType.Pet1;
+        mob.BehaviourType = MobBehaviourType.Pet;
         mob.BehaviourType.canRoam = false;
         return mob;
     }
