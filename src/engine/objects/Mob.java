@@ -76,19 +76,18 @@ public class Mob extends AbstractIntelligenceAgent {
     public int lastPatrolPointIndex = 0;
     public long stopPatrolTime = 0;
     public City guardedCity;
-    protected int dbID; //the database ID
     public int loadID;
     public float spawnRadius;
     //used by static mobs
     public int parentZoneUUID;
+    public boolean isSiege = false;
+    protected int dbID; //the database ID
     protected float statLat;
     protected float statLon;
     protected float statAlt;
     private int currentID;
     private int ownerUID = 0; //only used by pets
     private AbstractWorldObject fearedObject = null;
-
-    public boolean isSiege = false;
     private long lastAttackTime = 0;
     private int lastMobPowerToken = 0;
     private HashMap<Integer, MobEquipment> equip = null;
@@ -1059,7 +1058,7 @@ public class Mob extends AbstractIntelligenceAgent {
                 this.playerAgroMap.clear();
 
                 if (this.behaviourType.ordinal() == Enum.MobBehaviourType.GuardMinion.ordinal())
-                    this.spawnTime = (int) (-2.500 * ((Mob) this.npcOwner).building.getRank() + 22.5) * 60;
+                    this.spawnTime = (int) (-2.500 * this.npcOwner.building.getRank() + 22.5) * 60;
 
                 if (this.isPet()) {
 
@@ -1149,7 +1148,7 @@ public class Mob extends AbstractIntelligenceAgent {
         this.setHealth(this.healthMax);
 
         if (this.building == null && this.npcOwner != null && ((Mob) this.npcOwner).behaviourType.ordinal() == MobBehaviourType.GuardCaptain.ordinal())
-            this.building = ((Mob) this.npcOwner).building;
+            this.building = this.npcOwner.building;
         else if (this.building != null)
             this.region = BuildingManager.GetRegion(this.building, bindLoc.x, bindLoc.y, bindLoc.z);
 
@@ -1748,33 +1747,31 @@ public class Mob extends AbstractIntelligenceAgent {
         if (!this.isPet() && !isSiege)
             Mob.mobMapByDBID.put(this.dbID, this);
 
-        if (this.mobBase != null) {
-            this.gridObjectType = GridObjectType.DYNAMIC;
-            this.healthMax = this.mobBase.getHealthMax();
-            this.manaMax = 0;
-            this.staminaMax = 0;
-            this.setHealth(this.healthMax);
-            this.mana.set(this.manaMax);
-            this.stamina.set(this.staminaMax);
+        this.gridObjectType = GridObjectType.DYNAMIC;
+        this.healthMax = this.mobBase.getHealthMax();
+        this.manaMax = 0;
+        this.staminaMax = 0;
+        this.setHealth(this.healthMax);
+        this.mana.set(this.manaMax);
+        this.stamina.set(this.staminaMax);
 
-            if (this.contract == null)
-                this.level = (short) this.mobBase.getLevel();
+        if (this.contract == null)
+            this.level = (short) this.mobBase.getLevel();
 
-            //set bonuses
-            this.bonuses = new PlayerBonuses(this);
+        //set bonuses
 
-            //TODO set these correctly later
-            this.rangeHandOne = 8;
-            this.rangeHandTwo = -1;
-            this.minDamageHandOne = 0;
-            this.maxDamageHandOne = 0;
-            this.minDamageHandTwo = 1;
-            this.maxDamageHandTwo = 4;
-            this.atrHandOne = 300;
-            this.defenseRating = (short) this.mobBase.getDefenseRating();
-            this.isActive = true;
+        this.bonuses = new PlayerBonuses(this);
 
-        }
+        //TODO set these correctly later
+        this.rangeHandOne = 8;
+        this.rangeHandTwo = -1;
+        this.minDamageHandOne = 0;
+        this.maxDamageHandOne = 0;
+        this.minDamageHandTwo = 1;
+        this.maxDamageHandTwo = 4;
+        this.atrHandOne = 300;
+        this.defenseRating = (short) this.mobBase.getDefenseRating();
+        this.isActive = true;
 
         // Configure parent zone adding this NPC to the
         // zone collection
