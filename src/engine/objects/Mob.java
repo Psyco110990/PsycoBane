@@ -653,7 +653,7 @@ public class Mob extends AbstractIntelligenceAgent {
         minionMobile.guardedCity = guardCaptain.guardedCity;
 
         minionMobile.parentZoneUUID = guardCaptain.parentZoneUUID;
-        minionMobile.bindLoc = guardCaptain.building.getLoc();
+        minionMobile.bindLoc = Vector3fImmutable.ZERO;
 
         //grab name from minionbase.
 
@@ -1689,9 +1689,11 @@ public class Mob extends AbstractIntelligenceAgent {
         else
             this.contract = DbManager.ContractQueries.GET_CONTRACT(this.contractUUID);
 
-        // Setup mobile AI
+        // Setup mobile AI and equipset for contract
 
         if (this.contract != null) {
+
+            this.equipmentSetID = this.contract.getEquipmentSet();
 
             // Load AI for guard captains
 
@@ -1734,13 +1736,9 @@ public class Mob extends AbstractIntelligenceAgent {
         if (this.firstName.isEmpty())
             this.firstName = this.mobBase.getFirstName();
 
-        if (this.contract != null) {
-
-            this.equipmentSetID = this.contract.getEquipmentSet();
-
+        if (this.contract != null)
             if (this.lastName.isEmpty())
                 this.lastName = this.getContract().getName();
-        }
 
         this.healthMax = this.mobBase.getHealthMax();
         this.manaMax = 0;
@@ -1787,10 +1785,10 @@ public class Mob extends AbstractIntelligenceAgent {
             // with the exceptions being  mobiles
             // with a contract.
 
+            this.bindLoc = building.getLoc().add(bindLoc);
+
             if (this.contract != null || this.isSiege)
                 NPCManager.slotCharacterInBuilding(this);
-            else
-                this.bindLoc = building.getLoc();
         }
 
         // Setup location for this Mobile
