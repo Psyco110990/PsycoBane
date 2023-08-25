@@ -44,12 +44,7 @@ public class dbMobHandler extends dbHandlerBase {
             preparedStatement.setInt(7, 0);
             preparedStatement.setFloat(8, toAdd.spawnRadius);
             preparedStatement.setInt(9, toAdd.spawnTime);
-
-            if (toAdd.getContract() != null)
-                preparedStatement.setInt(10, toAdd.contractUUID);
-            else
-                preparedStatement.setInt(10, 0);
-
+            preparedStatement.setInt(10, toAdd.contractUUID);
             preparedStatement.setInt(11, toAdd.buildingUUID);
             preparedStatement.setInt(12, toAdd.level);
             preparedStatement.setString(13, toAdd.firstName);
