@@ -2822,7 +2822,6 @@ public class Enum {
 
     public enum MobBehaviourType {
         None(null, false, false, false, false, false),
-        //Power
         Power(null, false, true, true, true, false),
         PowerHelpee(Power, false, true, true, false, true),
         PowerHelpeeWimpy(Power, true, false, true, false, false),

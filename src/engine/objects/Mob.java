@@ -682,7 +682,7 @@ public class Mob extends AbstractIntelligenceAgent {
         DbManager.addToCache(minionMobile);
 
         minionMobile.setLoc(minionMobile.bindLoc);
-        // minionMobile.despawn();
+        minionMobile.despawn();
 
         int slot = guardCaptain.siegeMinionMap.size() + 1;
         guardCaptain.siegeMinionMap.put(minionMobile, slot);
@@ -1680,12 +1680,9 @@ public class Mob extends AbstractIntelligenceAgent {
         if (ConfigManager.serverType.equals(ServerType.LOGINSERVER))
             return;
 
-        try {
-            this.building = BuildingManager.getBuilding(this.buildingUUID);
-        } catch (Exception e) {
-            this.building = null;
-            Logger.error(e.getMessage());
-        }
+        this.gridObjectType = GridObjectType.DYNAMIC;
+        this.mobBase = MobBase.getMobBase(loadID);
+        this.building = BuildingManager.getBuilding(this.buildingUUID);
 
         if (this.contractUUID == 0)
             this.contract = null;
@@ -1719,6 +1716,11 @@ public class Mob extends AbstractIntelligenceAgent {
             }
         }
 
+        // Default to the mobbase for AI if nothing is hte mob field to override.
+
+        if (this.behaviourType == null || this.behaviourType.equals(MobBehaviourType.None))
+            this.behaviourType = this.getMobBase().fsm;
+
         if (this.building != null)
             this.guild = this.building.getGuild();
         else
@@ -1726,8 +1728,6 @@ public class Mob extends AbstractIntelligenceAgent {
 
         if (this.guild == null)
             this.guild = Guild.getErrantGuild();
-
-        this.mobBase = MobBase.getMobBase(loadID);
 
         this.setObjectTypeMask(MBServerStatics.MASK_MOB | this.getTypeMasks());
 
@@ -1742,7 +1742,6 @@ public class Mob extends AbstractIntelligenceAgent {
                 this.lastName = this.getContract().getName();
         }
 
-        this.gridObjectType = GridObjectType.DYNAMIC;
         this.healthMax = this.mobBase.getHealthMax();
         this.manaMax = 0;
         this.staminaMax = 0;
@@ -1778,39 +1777,36 @@ public class Mob extends AbstractIntelligenceAgent {
         this.parentZone.zoneMobSet.remove(this);
         this.parentZone.zoneMobSet.add(this);
 
-        // Setup location for this Mobile
-
-        this.bindLoc = this.parentZone.getLoc().add(this.bindLoc);
-        this.loc = new Vector3fImmutable(bindLoc);
-        this.endLoc = new Vector3fImmutable(bindLoc);
-
         // Handle Mobiles within buildings
 
-        if (this.building != null) {
+        if (this.building == null)
+            this.bindLoc = this.parentZone.getLoc().add(this.bindLoc);
+        else {
 
             // Mobiles inside buildings are offset from it not the zone
-
-            this.bindLoc = new Vector3fImmutable(this.statLat, this.statAlt, this.statLon);
-            this.bindLoc = this.building.getLoc().add(this.bindLoc);
+            // with the exceptions being  mobiles
+            // with a contract.
 
             if (this.contract != null || this.isSiege)
                 NPCManager.slotCharacterInBuilding(this);
+            else
+                this.bindLoc = building.getLoc();
         }
+
+        // Setup location for this Mobile
+
+        this.loc = new Vector3fImmutable(bindLoc);
+        this.endLoc = new Vector3fImmutable(bindLoc);
 
         // Initialize inventory
 
         this.charItemManager.load();
         this.loadInventory();
 
-        try {
-            if (this.equipmentSetID != 0)
-                this.equip = MobBase.loadEquipmentSet(this.equipmentSetID);
-            else
-                this.equip = new HashMap<>();
-
-        } catch (Exception e) {
-            Logger.error(e.getMessage());
-        }
+        if (this.equipmentSetID != 0)
+            this.equip = MobBase.loadEquipmentSet(this.equipmentSetID);
+        else
+            this.equip = new HashMap<>();
 
         // Powers from mobbase
 
@@ -1832,7 +1828,7 @@ public class Mob extends AbstractIntelligenceAgent {
         // Combine mobbase and mob aggro arrays into one bitvector
         //skip for pets
 
-        if (this.isPet() == false && (this.agentType.equals(AIAgentType.PET)) == false && this.isNecroPet() == false) {
+        if (this.isPet() == false && this.isNecroPet() == false) {
             if (this.getMobBase().notEnemy.size() > 0)
                 this.notEnemy.addAll(this.getMobBase().notEnemy);
 
@@ -1872,19 +1868,6 @@ public class Mob extends AbstractIntelligenceAgent {
                         MovementManager.translocate(this, newPatrolPoint, null);
                 }
             }
-
-            if (this.behaviourType == null)
-                this.behaviourType = this.getMobBase().fsm;
-
-            if (this.isPlayerGuard() && this.contract != null)
-                if (NPC.ISWallArcher(this.getContract())) {
-                    this.behaviourType = MobBehaviourType.GuardWallArcher;
-                    this.spawnTime = 450;
-                } else {
-                    this.behaviourType = MobBehaviourType.GuardCaptain;
-                    this.spawnTime = 900;
-                    this.guardedCity = ZoneManager.getCityAtLocation(this.bindLoc);
-                }
 
             this.deathTime = 0;
         } catch (Exception e) {
