@@ -216,10 +216,7 @@ public class Mob extends AbstractIntelligenceAgent {
             if (rs.getString("fsm").length() > 1)
                 this.behaviourType = MobBehaviourType.valueOf(rs.getString("fsm"));
 
-            if (this.isPet() || this.isSiege || (this.isPlayerGuard && this.contract == null))
-                this.currentID = (--Mob.staticID);
-            else
-                this.currentID = this.dbID;
+            this.currentID = this.dbID;
 
         } catch (Exception e) {
             Logger.error(e + " " + this.dbID);
@@ -638,6 +635,8 @@ public class Mob extends AbstractIntelligenceAgent {
             return null;
 
         minionMobile = new Mob();
+        minionMobile.currentID = (--Mob.staticID);
+
         minionMobile.level = level;
         minionMobile.loadID = guardCaptain.loadID;
         minionMobile.firstName = minionName;
@@ -655,7 +654,7 @@ public class Mob extends AbstractIntelligenceAgent {
         minionMobile.guardedCity = guardCaptain.guardedCity;
 
         minionMobile.parentZoneUUID = guardCaptain.parentZoneUUID;
-        minionMobile.bindLoc = guardCaptain.bindLoc;
+        minionMobile.bindLoc = guardCaptain.building.getLoc();
 
         //grab name from minionbase.
 
@@ -680,9 +679,9 @@ public class Mob extends AbstractIntelligenceAgent {
         // Configure and spawn minion
 
         minionMobile.runAfterLoad();
-        minionMobile.despawned = true;
+        minionMobile.despawned = false;
         minionMobile.setLoc(minionMobile.bindLoc);
-        minionMobile.despawn();
+        // minionMobile.despawn();
 
         DbManager.addToCache(minionMobile);
 
