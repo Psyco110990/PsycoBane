@@ -100,6 +100,7 @@ public class Mob extends AbstractIntelligenceAgent {
     // New Mobile constructor.  Fill in the blanks and then call
     // PERSIST.
     public Mob() {
+        super();
         this.dbID = MBServerStatics.NO_DB_ROW_ASSIGNED_YET;
         this.currentID = MBServerStatics.NO_DB_ROW_ASSIGNED_YET;
     }
@@ -130,26 +131,6 @@ public class Mob extends AbstractIntelligenceAgent {
         if (building != null && building.getOwner() != null) {
             this.lastName = "the " + contract.getName();
         }
-        clearStatic();
-    }
-
-    /**
-     * Normal Constructor
-     */
-    public Mob(String firstName, String lastName, short statStrCurrent, short statDexCurrent, short statConCurrent, short statIntCurrent, short statSpiCurrent, short level, int exp, boolean sit, boolean walk, boolean combat, Vector3fImmutable bindLoc, Vector3fImmutable currentLoc, Vector3fImmutable faceDir, short healthCurrent, short manaCurrent, short stamCurrent, Guild guild, byte runningTrains, int npcType, boolean isMob, Zone parent, int newUUID, Building building, int contractID) {
-        super(firstName, lastName, statStrCurrent, statDexCurrent, statConCurrent, statIntCurrent, statSpiCurrent, level, exp, sit, walk, combat, bindLoc, currentLoc, faceDir, healthCurrent, manaCurrent, stamCurrent, guild, runningTrains, newUUID);
-        this.dbID = newUUID;
-        this.loadID = npcType;
-
-        if (contractID == 0)
-            this.contract = null;
-        else
-            this.contract = DbManager.ContractQueries.GET_CONTRACT(contractID);
-
-        this.mobBase = MobBase.getMobBase(loadID);
-        this.parentZone = parent;
-        this.parentZoneID = (parent != null) ? parent.getObjectUUID() : 0;
-        this.building = building;
         clearStatic();
     }
 

@@ -86,6 +86,7 @@ public class NPC extends AbstractCharacter {
 
     public NPC() {
 
+        super();
         this.dbID = MBServerStatics.NO_DB_ROW_ASSIGNED_YET;
         this.currentID = MBServerStatics.NO_DB_ROW_ASSIGNED_YET;
     }
