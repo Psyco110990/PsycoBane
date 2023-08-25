@@ -1151,8 +1151,6 @@ public class Mob extends AbstractIntelligenceAgent {
         else if (this.building != null)
             this.region = BuildingManager.GetRegion(this.building, bindLoc.x, bindLoc.y, bindLoc.z);
 
-        //MovementManager.translocate(this, this.bindLoc, this.region);
-
         if (!this.isSiege && !this.isPlayerGuard && contract == null)
             loadInventory();
 
@@ -1783,7 +1781,6 @@ public class Mob extends AbstractIntelligenceAgent {
 
         // Setup location for this Mobile
 
-        this.bindLoc = new Vector3fImmutable(this.statLat, this.statAlt, this.statLon);
         this.bindLoc = this.parentZone.getLoc().add(this.bindLoc);
         this.loc = new Vector3fImmutable(bindLoc);
         this.endLoc = new Vector3fImmutable(bindLoc);
