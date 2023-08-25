@@ -662,11 +662,11 @@ public class Mob extends AbstractIntelligenceAgent {
         minionMobile.BehaviourType = Enum.MobBehaviourType.GuardMinion;
         minionMobile.guardedCity = guardCaptain.guardedCity;
         minionMobile.parentZoneUUID = guardCaptain.parentZoneUUID;
-        MovementManager.translocate(minionMobile, guardCaptain.bindLoc, guardCaptain.region);
         minionMobile.bindLoc = guardCaptain.bindLoc;
 
         minionMobile.runAfterLoad();
         minionMobile.despawned = true;
+        minionMobile.setLoc(minionMobile.bindLoc);
         minionMobile.despawn();
 
         //grab equipment and name from minionbase.
