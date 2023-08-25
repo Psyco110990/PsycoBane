@@ -535,7 +535,7 @@ public enum BuildingManager {
 
         if (NPC.ISWallArcher(contract)) {
 
-            mob = Mob.createMob(contract.getMobbaseID(), Vector3fImmutable.ZERO, contractOwner.getGuild(), true, zone, building, contract.getContractID(), pirateName, rank);
+            mob = Mob.createMob(contract.getMobbaseID(), Vector3fImmutable.ZERO, contractOwner.getGuild(), zone, building, contract, pirateName, rank);
 
             if (mob == null)
                 return false;
@@ -547,7 +547,7 @@ public enum BuildingManager {
 
         if (NPC.ISGuardCaptain(contract.getContractID())) {
 
-            mob = Mob.createMob(contract.getMobbaseID(), Vector3fImmutable.ZERO, contractOwner.getGuild(), true, zone, building, contract.getContractID(), pirateName, rank);
+            mob = Mob.createMob(contract.getMobbaseID(), Vector3fImmutable.ZERO, contractOwner.getGuild(), zone, building, contract, pirateName, rank);
 
             if (mob == null)
                 return false;
@@ -559,7 +559,7 @@ public enum BuildingManager {
         if (contract.getContractID() == 910) {
 
             //guard dog
-            mob = Mob.createMob(contract.getMobbaseID(), Vector3fImmutable.ZERO, contractOwner.getGuild(), true, zone, building, contract.getContractID(), pirateName, rank);
+            mob = Mob.createMob(contract.getMobbaseID(), Vector3fImmutable.ZERO, contractOwner.getGuild(), zone, building, contract, pirateName, rank);
 
             if (mob == null)
                 return false;

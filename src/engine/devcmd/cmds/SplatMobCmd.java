@@ -110,7 +110,7 @@ public class SplatMobCmd extends AbstractDevCmd {
 
                 mobile = Mob.createMob(_mobileUUID,
                         Vector3fImmutable.getRandomPointInCircle(_currentLocation, _targetRange),
-                        null, true, serverZone, null, 0, "", 1);
+                        null, serverZone, null, null, "", 1);
 
                 if (mobile != null) {
                     mobile.updateDatabase();

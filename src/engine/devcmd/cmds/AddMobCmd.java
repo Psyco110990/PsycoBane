@@ -43,7 +43,7 @@ public class AddMobCmd extends AbstractDevCmd {
                 MobBase mb = (MobBase) mobbaseAGO;
                 int loadID = mb.getObjectUUID();
                 Mob mob = Mob.createMob(loadID, Vector3fImmutable.getRandomPointInCircle(pc.getLoc(), 100),
-                        null, true, zone, null, 0, "", 1);
+                        null, zone, null, null, "", 1);
                 if (mob != null) {
                     mob.updateDatabase();
                     this.setResult(String.valueOf(mob.getDBID()));
@@ -84,7 +84,7 @@ public class AddMobCmd extends AbstractDevCmd {
 
 
         Mob mob = Mob.createMob(loadID, pc.getLoc(),
-                null, true, zone, null, 0, "", 1);
+                null, zone, null, null, "", 1);
         if (mob != null) {
             mob.updateDatabase();
             ChatManager.chatSayInfo(pc,

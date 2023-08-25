@@ -467,7 +467,7 @@ public class Mob extends AbstractIntelligenceAgent {
         writer.putInt(mob.currentID);
     }
 
-    public static Mob createMob(int loadID, Vector3fImmutable spawn, Guild guild, boolean isMob, Zone parent, Building building, int contractID, String pirateName, int level) {
+    public static Mob createMob(int loadID, Vector3fImmutable spawn, Guild guild, Zone parent, Building building, Contract contract, String pirateName, int level) {
 
         Mob mobile = new Mob();
         mobile.dbID = MBServerStatics.NO_DB_ROW_ASSIGNED_YET;
@@ -489,8 +489,7 @@ public class Mob extends AbstractIntelligenceAgent {
 
         mobile.firstName = pirateName;
 
-        mobile.contractUUID = contractID;
-
+        mobile.contractUUID = contract.getContractID();
 
         Mob mob;
 
