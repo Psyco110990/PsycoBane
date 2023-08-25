@@ -595,9 +595,10 @@ public class WorldServer {
 					m.setObjectTypeMask(MBServerStatics.MASK_MOB | m.getTypeMasks());
 					m.setLoc(m.getLoc());
 
-					//ADD GUARDS HERE.
-					//		if (m.building != null && m.building.getBlueprint() != null && m.building.getBlueprint().getBuildingGroup() == BuildingGroup.BARRACK)
-					//			DbManager.MobQueries.LOAD_PATROL_POINTS(m);
+					// Load Minions for Guard Captains here.
+
+					if (m.building != null && m.building.getBlueprint() != null && m.building.getBlueprint().getBuildingGroup() == Enum.BuildingGroup.BARRACK)
+						DbManager.MobQueries.LOAD_GUARD_MINIONS(m);
 				}
 
 				//Handle npc's

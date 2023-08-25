@@ -101,17 +101,17 @@ public class dbMobHandler extends dbHandlerBase {
         return row_count;
     }
 
-    public void LOAD_PATROL_POINTS(Mob captain) {
+    public void LOAD_GUARD_MINIONS(Mob guardCaptain) {
 
         try (Connection connection = DbManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `dyn_guards` WHERE `captainUID` = ?")) {
 
-            preparedStatement.setInt(1, captain.getObjectUUID());
+            preparedStatement.setInt(1, guardCaptain.getObjectUUID());
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
                 String name = rs.getString("name");
-                Mob toCreate = Mob.createGuardMob(captain, captain.getGuild(), captain.getParentZone(), captain.building.getLoc(), captain.getLevel(), name);
+                Mob toCreate = Mob.createGuardMob(guardCaptain, guardCaptain.getGuild(), guardCaptain.getParentZone(), guardCaptain.building.getLoc(), guardCaptain.getLevel(), name);
 
                 if (toCreate == null)
                     return;
