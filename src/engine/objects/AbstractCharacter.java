@@ -52,8 +52,8 @@ public abstract class AbstractCharacter extends AbstractWorldObject {
     public int contractUUID;
     public Contract contract;
 
-    protected String firstName;
-    protected String lastName;
+    public String firstName;
+    public String lastName;
     protected short statStrCurrent;
     protected short statDexCurrent;
     protected short statConCurrent;

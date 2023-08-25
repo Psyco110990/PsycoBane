@@ -35,24 +35,24 @@ public class dbMobHandler extends dbHandlerBase {
         try (Connection connection = DbManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("CALL `mob_CREATE`(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);")) {
 
-            preparedStatement.setLong(1, toAdd.getParentZoneUUID());
-            preparedStatement.setInt(2, toAdd.getMobBaseID());
-            preparedStatement.setInt(3, toAdd.getGuildUUID());
-            preparedStatement.setFloat(4, toAdd.getSpawnX());
-            preparedStatement.setFloat(5, toAdd.getSpawnY());
-            preparedStatement.setFloat(6, toAdd.getSpawnZ());
+            preparedStatement.setLong(1, toAdd.parentZoneUUID);
+            preparedStatement.setInt(2, toAdd.loadID);
+            preparedStatement.setInt(3, toAdd.guildUUID);
+            preparedStatement.setFloat(4, toAdd.bindLoc.x);
+            preparedStatement.setFloat(5, toAdd.bindLoc.y);
+            preparedStatement.setFloat(6, toAdd.bindLoc.z);
             preparedStatement.setInt(7, 0);
-            preparedStatement.setFloat(8, toAdd.getSpawnRadius());
-            preparedStatement.setInt(9, toAdd.getTrueSpawnTime());
+            preparedStatement.setFloat(8, toAdd.spawnRadius);
+            preparedStatement.setInt(9, toAdd.spawnTime);
 
             if (toAdd.getContract() != null)
-                preparedStatement.setInt(10, toAdd.getContract().getContractID());
+                preparedStatement.setInt(10, toAdd.contractUUID);
             else
                 preparedStatement.setInt(10, 0);
 
-            preparedStatement.setInt(11, toAdd.getBuildingID());
-            preparedStatement.setInt(12, toAdd.getLevel());
-            preparedStatement.setString(13, toAdd.getFirstName());
+            preparedStatement.setInt(11, toAdd.buildingUUID);
+            preparedStatement.setInt(12, toAdd.level);
+            preparedStatement.setString(13, toAdd.firstName);
 
             ResultSet rs = preparedStatement.executeQuery();
 

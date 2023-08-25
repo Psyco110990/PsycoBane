@@ -78,10 +78,10 @@ public class Mob extends AbstractIntelligenceAgent {
     public long stopPatrolTime = 0;
     public City guardedCity;
     protected int dbID; //the database ID
-    protected int loadID;
-    protected float spawnRadius;
+    public int loadID;
+    public float spawnRadius;
     //used by static mobs
-    protected int parentZoneUUID;
+    public int parentZoneUUID;
     protected float statLat;
     protected float statLon;
     protected float statAlt;
@@ -472,6 +472,7 @@ public class Mob extends AbstractIntelligenceAgent {
         Mob mobile = new Mob();
         mobile.dbID = MBServerStatics.NO_DB_ROW_ASSIGNED_YET;
         mobile.loadID = loadID;
+        mobile.level = (short) level;
 
         if (guild.isEmptyGuild())
             mobile.guildUUID = 0;
@@ -480,32 +481,21 @@ public class Mob extends AbstractIntelligenceAgent {
 
         mobile.parentZoneUUID = parent.getObjectUUID();
         mobile.buildingUUID = building.getObjectUUID();
+
+        if (mobile.buildingUUID != 0)
+            mobile.bindLoc = Vector3fImmutable.ZERO;
+        else
+            mobile.bindLoc = spawn;
+
         mobile.firstName = pirateName;
-        mobile.bindLoc = spawn;
 
+        mobile.contractUUID = contractID;
 
-        Mob mobWithoutID = new Mob(pirateName, "", (short) 0, (short) 0, (short) 0, (short) 0, (short) 0, (short) 1, 0, false, false, false, spawn, spawn, Vector3fImmutable.ZERO, (short) 1, (short) 1, (short) 1, guild, (byte) 0, loadID, isMob, parent, building, contractID);
-
-        if (mobWithoutID.mobBase == null)
-            return null;
-
-        mobWithoutID.level = (short) level;
-
-        // Parent zone is required by dbhandler.  Can likely
-        // refactor that out and just use the id.
-
-        mobWithoutID.parentZone = parent;
-        mobWithoutID.parentZoneUUID = parent.getObjectUUID();
-
-        // NPC in a Building derives position from slot
-
-        if (mobWithoutID.building != null)
-            mobWithoutID.bindLoc = Vector3fImmutable.ZERO;
 
         Mob mob;
 
         try {
-            mob = DbManager.MobQueries.ADD_MOB(mobWithoutID);
+            mob = DbManager.MobQueries.ADD_MOB(mobile);
             mob.setObjectTypeMask(MBServerStatics.MASK_MOB | mob.getTypeMasks());
 
         } catch (Exception e) {
