@@ -1827,8 +1827,6 @@ public class Mob extends AbstractIntelligenceAgent {
             this.defenseRating = (short) this.mobBase.getDefenseRating();
             this.isActive = true;
 
-            this.charItemManager.load();
-
             // Load AI for wall archers
 
             if (this.contract != null && NPC.ISWallArcher(this.contract)) {
@@ -1869,6 +1867,7 @@ public class Mob extends AbstractIntelligenceAgent {
         // Initialize inventory
 
         this.charItemManager = new CharacterItemManager(this);
+        this.charItemManager.load();
         this.loadInventory();
 
         try {

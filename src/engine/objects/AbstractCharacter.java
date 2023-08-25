@@ -231,8 +231,6 @@ public abstract class AbstractCharacter extends AbstractWorldObject {
         this.skills = new ConcurrentHashMap<>(MBServerStatics.CHM_INIT_CAP, MBServerStatics.CHM_LOAD, MBServerStatics.CHM_THREAD_LOW);
         this.initializeCharacter();
 
-        // Dangerous to use THIS in a constructor!!!
-        this.charItemManager = new CharacterItemManager(this);
     }
 
     /**
@@ -275,8 +273,6 @@ public abstract class AbstractCharacter extends AbstractWorldObject {
         this.powers = new ConcurrentHashMap<>();
         this.initializeCharacter();
 
-        // Dangerous to use THIS in a constructor!!!
-        this.charItemManager = new CharacterItemManager(this);
     }
 
     /**
@@ -357,9 +353,6 @@ public abstract class AbstractCharacter extends AbstractWorldObject {
         this.powers = new ConcurrentHashMap<>();
 
         this.initializeCharacter();
-
-        // Dangerous to use THIS in a constructor!!!
-        this.charItemManager = new CharacterItemManager(this);
     }
 
     public static int getBankCapacity() {
