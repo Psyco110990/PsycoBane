@@ -639,7 +639,6 @@ public class Mob extends AbstractIntelligenceAgent {
 
     public static synchronized Mob createGuardMinion(Mob guardCaptain, short level, String minionName) {
 
-        MobBase minionMobBase;
         Mob minionMobile;
 
         int maxSlots = NPCManager.getMaxMinions(guardCaptain);
