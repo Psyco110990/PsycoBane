@@ -1693,28 +1693,31 @@ public class Mob extends AbstractIntelligenceAgent {
         else
             this.contract = DbManager.ContractQueries.GET_CONTRACT(this.contractUUID);
 
-        // Guard captaiin AI
+        // Guard captain AI
 
-        if (NPC.ISGuardCaptain(contract.getContractID())) {
-            this.spawnTime = 60 * 15;
-            this.isPlayerGuard = true;
-        }
+        if (this.contract != null) {
 
-        // Load AI for wall archers
+            if (NPC.ISGuardCaptain(contract.getContractID())) {
+                this.spawnTime = 60 * 15;
+                this.isPlayerGuard = true;
+            }
 
-        if (this.contract != null && NPC.ISWallArcher(this.contract)) {
-            this.behaviourType = MobBehaviourType.GuardWallArcher;
-            this.isPlayerGuard = true;
-            this.spawnTime = 450;
-        }
+            // Load AI for wall archers
 
-        // Load AI for guard dogs
+            if (NPC.ISWallArcher(this.contract)) {
+                this.behaviourType = MobBehaviourType.GuardWallArcher;
+                this.isPlayerGuard = true;
+                this.spawnTime = 450;
+            }
 
-        if (this.contract != null && this.contract.getContractID() == 910) {
-            this.isPlayerGuard = true;
-            this.behaviourType = MobBehaviourType.GuardCaptain;
-            this.spawnTime = 900;
-            this.guardedCity = ZoneManager.getCityAtLocation(this.bindLoc);
+            // Load AI for guard dogs
+
+            if (this.contract.getContractID() == 910) {
+                this.isPlayerGuard = true;
+                this.behaviourType = MobBehaviourType.GuardCaptain;
+                this.spawnTime = 900;
+                this.guardedCity = ZoneManager.getCityAtLocation(this.bindLoc);
+            }
         }
 
         if (this.building != null)
