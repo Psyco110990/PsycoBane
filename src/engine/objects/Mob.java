@@ -1627,6 +1627,9 @@ public class Mob extends AbstractIntelligenceAgent {
             return;
 
         this.mobBase = MobBase.getMobBase(loadID);
+
+        this.setObjectTypeMask(MBServerStatics.MASK_MOB | this.getTypeMasks());
+
         this.building = BuildingManager.getBuilding(this.buildingUUID);
 
         if (this.contractUUID == 0)
@@ -1652,12 +1655,12 @@ public class Mob extends AbstractIntelligenceAgent {
             // Load AI for wall archers
 
             if (NPC.ISWallArcher(this.contract)) {
+                this.gridObjectType = GridObjectType.STATIC;
                 this.behaviourType = MobBehaviourType.GuardWallArcher;
                 this.isPlayerGuard = true;
                 this.spawnTime = 450;
                 this.guardedCity = ZoneManager.getCityAtLocation(this.building.getLoc());
             }
-
         }
 
         // Default to the mobbase for AI if nothing is hte mob field to override.
@@ -1675,8 +1678,6 @@ public class Mob extends AbstractIntelligenceAgent {
 
         if (this.guild == null)
             this.guild = Guild.getErrantGuild();
-
-        this.setObjectTypeMask(MBServerStatics.MASK_MOB | this.getTypeMasks());
 
         if (this.firstName.isEmpty())
             this.firstName = this.mobBase.getFirstName();
