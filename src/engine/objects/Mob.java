@@ -96,6 +96,8 @@ public class Mob extends AbstractIntelligenceAgent {
         super();
         this.dbID = MBServerStatics.NO_DB_ROW_ASSIGNED_YET;
         this.currentID = MBServerStatics.NO_DB_ROW_ASSIGNED_YET;
+        this.bindLoc = Vector3fImmutable.ZERO;
+        this.gridObjectType = GridObjectType.DYNAMIC;
     }
 
     /**
@@ -140,6 +142,7 @@ public class Mob extends AbstractIntelligenceAgent {
             this.dbID = rs.getInt(1);
             this.loadID = rs.getInt("mob_mobbaseID");
             this.gridObjectType = GridObjectType.DYNAMIC;
+
             this.spawnRadius = rs.getFloat("mob_spawnRadius");
             this.spawnTime = rs.getInt("mob_spawnTime");
 
@@ -1622,7 +1625,6 @@ public class Mob extends AbstractIntelligenceAgent {
         if (ConfigManager.serverType.equals(ServerType.LOGINSERVER))
             return;
 
-        this.gridObjectType = GridObjectType.DYNAMIC;
         this.mobBase = MobBase.getMobBase(loadID);
         this.building = BuildingManager.getBuilding(this.buildingUUID);
 
