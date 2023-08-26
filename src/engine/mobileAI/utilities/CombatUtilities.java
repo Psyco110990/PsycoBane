@@ -48,7 +48,7 @@ public class CombatUtilities {
     }
 
     public static boolean inRange2D(AbstractWorldObject entity1, AbstractWorldObject entity2, double range) {
-        return entity1.getLoc().distance2D(entity2.getLoc()) < range;
+        return entity1.getLoc().distanceSquared2D(entity2.getLoc()) < range * range;
     }
 
     public static void swingIsBlock(Mob agent, AbstractWorldObject target, int animation) {
