@@ -624,6 +624,7 @@ public class Mob extends AbstractIntelligenceAgent {
         minionMobile.behaviourType = Enum.MobBehaviourType.GuardMinion;
         minionMobile.isPlayerGuard = true;
         minionMobile.guardedCity = guardCaptain.guardedCity;
+        minionMobile.patrolPoints = guardCaptain.building.patrolPoints;
 
         minionMobile.parentZoneUUID = guardCaptain.parentZoneUUID;
         minionMobile.bindLoc = Vector3fImmutable.ZERO;
