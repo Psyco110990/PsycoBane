@@ -8,7 +8,6 @@ import engine.gameManager.BuildingManager;
 import engine.gameManager.DbManager;
 import engine.gameManager.NPCManager;
 import engine.gameManager.SessionManager;
-import engine.math.Vector3fImmutable;
 import engine.net.Dispatch;
 import engine.net.DispatchMessage;
 import engine.net.client.ClientConnection;
@@ -146,42 +145,10 @@ public class MinionTrainingMsgHandler extends AbstractClientMsgHandler {
                         if (mobBase == 0)
                             return true;
 
-                        Mob siegeMob = Mob.createSiegeMob(npc, mobBase, npc.getGuild(), zone, b.getLoc(), (short) 1);
+                        Mob siegeMob = Mob.createSiegeMinion(npc, mobBase);
 
                         if (siegeMob == null)
                             return true;
-
-                        if (siegeMob != null) {
-
-                            siegeMob.setSpawnTime(60 * 15);
-                            Building building = BuildingManager.getBuilding(((MinionTrainingMessage) baseMsg).getBuildingID());
-
-                            siegeMob.building = building;
-                            siegeMob.parentZone = zone;
-
-                            // Slot siege minion
-                            // Can be either corner tower or bulwark.
-
-                            int slot;
-
-                            if (building.getBlueprint().getBuildingGroup().equals(Enum.BuildingGroup.ARTYTOWER))
-                                slot = 2;
-                            else
-                                slot = ((NPC) siegeMob.guardCaptain).getSiegeMinionMap().get(siegeMob) + 1;  // First slot is for the captain
-
-                            BuildingLocation slotLocation = BuildingManager._slotLocations.get(building.meshUUID).get(slot);
-                            siegeMob.bindLoc = building.getLoc().add(slotLocation.getLocation());
-
-                            // Rotate slot position by the building rotation
-
-                            siegeMob.bindLoc = Vector3fImmutable.rotateAroundPoint(building.getLoc(), siegeMob.bindLoc, building.getBounds().getQuaternion().angleY);
-
-                            siegeMob.loc = new Vector3fImmutable(siegeMob.bindLoc);
-                            siegeMob.endLoc = new Vector3fImmutable(siegeMob.bindLoc);
-
-                            zone.zoneMobSet.add(siegeMob);
-                            siegeMob.setLoc(siegeMob.bindLoc);
-                        }
                     }
 
                     ManageNPCMsg mnm = new ManageNPCMsg(npc);

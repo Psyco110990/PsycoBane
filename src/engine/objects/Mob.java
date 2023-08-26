@@ -663,38 +663,39 @@ public class Mob extends AbstractIntelligenceAgent {
         return minionMobile;
     }
 
-    public static synchronized Mob createSiegeMob(NPC owner, int loadID, Guild guild, Zone parent, Vector3fImmutable loc, short level) {
+    public static synchronized Mob createSiegeMinion(NPC artyCaptain, int loadID) {
 
         Mob siegeMinion;
 
-        if (owner.getSiegeMinionMap().size() == 3)
+        if (artyCaptain.getSiegeMinionMap().size() == 3)
             return null;
 
         siegeMinion = new Mob();
 
         siegeMinion.level = 1;
         siegeMinion.loadID = loadID;
-        siegeMinion.guildUUID = guild.getObjectUUID();
+        siegeMinion.guildUUID = artyCaptain.guildUUID;
         siegeMinion.equipmentSetID = 0;
-        siegeMinion.buildingUUID = owner.buildingUUID;
-        siegeMinion.guardCaptain = owner;
-        siegeMinion.parentZoneUUID = parent.getObjectUUID();
+        siegeMinion.buildingUUID = artyCaptain.buildingUUID;
+        siegeMinion.guardCaptain = artyCaptain;
+        siegeMinion.parentZoneUUID = artyCaptain.parentZoneUUID;
         siegeMinion.behaviourType = MobBehaviourType.SiegeEngine;
         siegeMinion.bindLoc = Vector3fImmutable.ZERO;
+        siegeMinion.spawnTime = (60 * 15);
 
         int slot = 0;
 
-        if (!owner.getSiegeMinionMap().containsValue(1))
+        if (!artyCaptain.getSiegeMinionMap().containsValue(1))
             slot = 1;
-        else if (!owner.getSiegeMinionMap().containsValue(2))
+        else if (!artyCaptain.getSiegeMinionMap().containsValue(2))
             slot = 2;
 
-        owner.getSiegeMinionMap().put(siegeMinion, slot);
+        artyCaptain.getSiegeMinionMap().put(siegeMinion, slot);
 
         siegeMinion.runAfterLoad();
-        siegeMinion.despawned = true;
         DbManager.addToCache(siegeMinion);
         siegeMinion.setLoc(siegeMinion.bindLoc);
+        siegeMinion.despawn();
 
         return siegeMinion;
     }
