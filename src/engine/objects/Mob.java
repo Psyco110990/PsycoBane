@@ -115,18 +115,6 @@ public class Mob extends AbstractIntelligenceAgent {
 
     }
 
-    //SIEGE CONSTRUCTOR
-    public Mob(MobBase mobBase, Guild guild, Zone parent, short level, Vector3fImmutable loc, int tableID, boolean isPlayerGuard) {
-        super(mobBase.getFirstName(), "", (short) 0, (short) 0, (short) 0, (short) 0, (short) 0, level, 0, false, true, false, loc, loc, Vector3fImmutable.ZERO, (short) mobBase.getHealthMax(), (short) 0, (short) 0, guild, (byte) 0, tableID);
-        this.dbID = tableID;
-        this.loadID = mobBase.getObjectUUID();
-        this.mobBase = mobBase;
-        this.parentZone = parent;
-        this.parentZoneUUID = (parent != null) ? parent.getObjectUUID() : 0;
-        this.ownerUID = 0;
-        this.equip = new HashMap<>();
-    }
-
     /**
      * ResultSet Constructor
      */
