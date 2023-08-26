@@ -61,13 +61,14 @@ public class Mob extends AbstractIntelligenceAgent {
     public Zone parentZone;
     public boolean hasLoot = false;
     public boolean isPlayerGuard = false;
-    public AbstractCharacter npcOwner;
+    public AbstractCharacter guardCaptain;
     public long deathTime = 0;
     public int equipmentSetID = 0;
     public int runeSet = 0;
     public int bootySet = 0;
-    public EnumBitSet<MonsterType> notEnemy;
-    public EnumBitSet<Enum.MonsterType> enemy;
+    public EnumBitSet<MonsterType> notEnemy = EnumBitSet.noneOf(MonsterType.class);
+    public EnumBitSet<Enum.MonsterType> enemy = EnumBitSet.noneOf(MonsterType.class);
+    ;
     public MobBehaviourType behaviourType;
     public ArrayList<Vector3fImmutable> patrolPoints;
     public int lastPatrolPointIndex = 0;
@@ -323,7 +324,7 @@ public class Mob extends AbstractIntelligenceAgent {
 
         writer.putInt(0); // NPC menu options
 
-        if (mob.contract != null && mob.npcOwner == null) {
+        if (mob.contract != null && mob.guardCaptain == null) {
             writer.put((byte) 1);
             writer.putLong(0);
             writer.putLong(0);
@@ -336,12 +337,12 @@ public class Mob extends AbstractIntelligenceAgent {
         } else
             writer.put((byte) 0);
 
-        if (mob.npcOwner != null) {
+        if (mob.guardCaptain != null) {
             writer.put((byte) 1);
             writer.putInt(GameObjectType.PlayerCharacter.ordinal());
             writer.putInt(131117009);
-            writer.putInt(mob.npcOwner.getObjectType().ordinal());
-            writer.putInt(mob.npcOwner.getObjectUUID());
+            writer.putInt(mob.guardCaptain.getObjectType().ordinal());
+            writer.putInt(mob.guardCaptain.getObjectUUID());
             writer.putInt(8);
         } else
             writer.put((byte) 0);
@@ -618,7 +619,7 @@ public class Mob extends AbstractIntelligenceAgent {
         minionMobile.notEnemy = guardCaptain.notEnemy;
 
         minionMobile.deathTime = System.currentTimeMillis();
-        minionMobile.npcOwner = guardCaptain;
+        minionMobile.guardCaptain = guardCaptain;
         minionMobile.spawnTime = (int) (-2.500 * guardCaptain.building.getRank() + 22.5) * 60;
         minionMobile.behaviourType = Enum.MobBehaviourType.GuardMinion;
         minionMobile.isPlayerGuard = true;
@@ -651,7 +652,6 @@ public class Mob extends AbstractIntelligenceAgent {
         // Configure and spawn minion
 
         minionMobile.runAfterLoad();
-        minionMobile.despawned = false;
         DbManager.addToCache(minionMobile);
 
         minionMobile.setLoc(minionMobile.bindLoc);
@@ -665,26 +665,22 @@ public class Mob extends AbstractIntelligenceAgent {
 
     public static synchronized Mob createSiegeMob(NPC owner, int loadID, Guild guild, Zone parent, Vector3fImmutable loc, short level) {
 
-        MobBase minionMobBase;
-        Mob mob;
+        Mob siegeMinion;
 
         if (owner.getSiegeMinionMap().size() == 3)
             return null;
 
-        minionMobBase = MobBase.getMobBase(loadID);
+        siegeMinion = new Mob();
 
-        if (minionMobBase == null)
-            return null;
-
-        mob = new Mob(minionMobBase, guild, parent, level, new Vector3fImmutable(1, 1, 1), 0, false);
-        //mob.runAfterLoad();
-        mob.despawned = true;
-        DbManager.addToCache(mob);
-
-        mob.setObjectTypeMask(MBServerStatics.MASK_MOB | mob.getTypeMasks());
-
-        //mob.setMob();
-        //      mob.setSiege(true);
+        siegeMinion.level = 1;
+        siegeMinion.loadID = loadID;
+        siegeMinion.guildUUID = guild.getObjectUUID();
+        siegeMinion.equipmentSetID = 0;
+        siegeMinion.buildingUUID = owner.buildingUUID;
+        siegeMinion.guardCaptain = owner;
+        siegeMinion.parentZoneUUID = parent.getObjectUUID();
+        siegeMinion.behaviourType = MobBehaviourType.SiegeEngine;
+        siegeMinion.bindLoc = Vector3fImmutable.ZERO;
 
         int slot = 0;
 
@@ -693,12 +689,14 @@ public class Mob extends AbstractIntelligenceAgent {
         else if (!owner.getSiegeMinionMap().containsValue(2))
             slot = 2;
 
-        owner.getSiegeMinionMap().put(mob, slot);
+        owner.getSiegeMinionMap().put(siegeMinion, slot);
 
-        mob.setNpcOwner(owner);
-        mob.behaviourType = MobBehaviourType.Pet1;
-        mob.behaviourType.canRoam = false;
-        return mob;
+        siegeMinion.runAfterLoad();
+        siegeMinion.despawned = true;
+        DbManager.addToCache(siegeMinion);
+        siegeMinion.setLoc(siegeMinion.bindLoc);
+
+        return siegeMinion;
     }
 
 
@@ -995,7 +993,7 @@ public class Mob extends AbstractIntelligenceAgent {
                 this.playerAgroMap.clear();
 
                 if (this.behaviourType.ordinal() == Enum.MobBehaviourType.GuardMinion.ordinal())
-                    this.spawnTime = (int) (-2.500 * this.npcOwner.building.getRank() + 22.5) * 60;
+                    this.spawnTime = (int) (-2.500 * this.guardCaptain.building.getRank() + 22.5) * 60;
 
                 if (this.isPet()) {
 
@@ -1084,8 +1082,8 @@ public class Mob extends AbstractIntelligenceAgent {
         this.recalculateStats();
         this.setHealth(this.healthMax);
 
-        if (this.building == null && this.npcOwner != null && ((Mob) this.npcOwner).behaviourType.ordinal() == MobBehaviourType.GuardCaptain.ordinal())
-            this.building = this.npcOwner.building;
+        if (this.building == null && this.guardCaptain != null && ((Mob) this.guardCaptain).behaviourType.ordinal() == MobBehaviourType.GuardCaptain.ordinal())
+            this.building = this.guardCaptain.building;
         else if (this.building != null)
             this.region = BuildingManager.GetRegion(this.building, bindLoc.x, bindLoc.y, bindLoc.z);
 
@@ -1843,8 +1841,8 @@ public class Mob extends AbstractIntelligenceAgent {
         return this.behaviourType.equals(MobBehaviourType.SiegeEngine);
     }
 
-    public void setNpcOwner(AbstractCharacter npcOwner) {
-        this.npcOwner = npcOwner;
+    public void setGuardCaptain(AbstractCharacter guardCaptain) {
+        this.guardCaptain = guardCaptain;
     }
 
     public boolean isNecroPet() {

@@ -2846,7 +2846,7 @@ public class Enum {
         //Independent Types
         SimpleStandingGuard(null, false, false, false, false, false),
         Pet1(null, false, false, true, false, false),
-        SiegeEngine(null, false, false, true, false, false),
+        SiegeEngine(null, false, false, false, false, false),
         Simple(null, false, false, true, false, false),
         Helpee(null, false, true, true, false, true),
         HelpeeWimpy(null, true, false, true, false, false),
@@ -2857,13 +2857,12 @@ public class Enum {
         HamletGuard(null, false, true, false, false, false),
         AggroWanderer(null, false, false, true, false, false);
 
-        private static HashMap<Integer, MobBehaviourType> _behaviourTypes = new HashMap<>();
-        public MobBehaviourType BehaviourHelperType;
-        public boolean isWimpy;
-        public boolean isAgressive;
-        public boolean canRoam;
-        public boolean callsForHelp;
-        public boolean respondsToCallForHelp;
+        public final MobBehaviourType BehaviourHelperType;
+        public final boolean isWimpy;
+        public final boolean isAgressive;
+        public final boolean canRoam;
+        public final boolean callsForHelp;
+        public final boolean respondsToCallForHelp;
 
         MobBehaviourType(MobBehaviourType helpeebehaviourType, boolean wimpy, boolean agressive, boolean canroam, boolean callsforhelp, boolean respondstocallforhelp) {
             this.BehaviourHelperType = helpeebehaviourType;

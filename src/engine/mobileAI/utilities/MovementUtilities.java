@@ -13,10 +13,10 @@ import engine.Enum;
 import engine.Enum.GameObjectType;
 import engine.Enum.ModType;
 import engine.Enum.SourceType;
-import engine.mobileAI.Threads.MobAIThread;
 import engine.exception.MsgSendException;
 import engine.gameManager.MovementManager;
 import engine.math.Vector3fImmutable;
+import engine.mobileAI.Threads.MobAIThread;
 import engine.net.client.msg.MoveToPointMsg;
 import engine.objects.*;
 import org.pmw.tinylog.Logger;
@@ -38,7 +38,7 @@ public class MovementUtilities {
             if (agent.getContract() != null)
                 guardCaptain = agent;
             else
-                guardCaptain = (Mob) agent.npcOwner;
+                guardCaptain = (Mob) agent.guardCaptain;
 
             if (guardCaptain != null) {
                 Building barracks = guardCaptain.building;

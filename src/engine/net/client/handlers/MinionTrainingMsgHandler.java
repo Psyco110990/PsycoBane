@@ -167,7 +167,7 @@ public class MinionTrainingMsgHandler extends AbstractClientMsgHandler {
                             if (building.getBlueprint().getBuildingGroup().equals(Enum.BuildingGroup.ARTYTOWER))
                                 slot = 2;
                             else
-                                slot = ((NPC) siegeMob.npcOwner).getSiegeMinionMap().get(siegeMob) + 1;  // First slot is for the captain
+                                slot = ((NPC) siegeMob.guardCaptain).getSiegeMinionMap().get(siegeMob) + 1;  // First slot is for the captain
 
                             BuildingLocation slotLocation = BuildingManager._slotLocations.get(building.meshUUID).get(slot);
                             siegeMob.bindLoc = building.getLoc().add(slotLocation.getLocation());

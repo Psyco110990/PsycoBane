@@ -366,7 +366,7 @@ public class ManageNPCMsg extends ClientNetMsg {
                                 long timeLife = upgradeTime - curTime;
 
                                 if (upgradeTime * 1000 > System.currentTimeMillis()) {
-                                    if (mob.npcOwner.isAlive()) {
+                                    if (mob.guardCaptain.isAlive()) {
                                         writer.put((byte) 0);//shows respawning timer
                                         writer.putInt(mob.spawnTime);
                                         writer.putInt(mob.spawnTime);
@@ -689,7 +689,7 @@ public class ManageNPCMsg extends ClientNetMsg {
                                 long timeLife = upgradeTime - curTime;
 
                                 if (upgradeTime * 1000 > System.currentTimeMillis()) {
-                                    if (mob.npcOwner.isAlive()) {
+                                    if (mob.guardCaptain.isAlive()) {
                                         writer.put((byte) 0);//shows respawning timer
                                         writer.putInt(mob.spawnTime);
                                         writer.putInt(mob.spawnTime);

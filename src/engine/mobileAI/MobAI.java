@@ -313,7 +313,7 @@ public class MobAI {
                 int contractID;
 
                 if (mob.behaviourType.equals(Enum.MobBehaviourType.GuardMinion))
-                    contractID = mob.npcOwner.contract.getContractID();
+                    contractID = mob.guardCaptain.contract.getContractID();
                 else
                     contractID = mob.contract.getContractID();
 
@@ -609,7 +609,7 @@ public class MobAI {
             if (mob.despawned && mob.isPlayerGuard) {
 
                 if (mob.behaviourType.equals(Enum.MobBehaviourType.GuardMinion)) {
-                    if (mob.npcOwner.isAlive() == false || ((Mob) mob.npcOwner).despawned == true) {
+                    if (mob.guardCaptain.isAlive() == false || ((Mob) mob.guardCaptain).despawned == true) {
 
                         //minions don't respawn while guard captain is dead
 
@@ -808,7 +808,7 @@ public class MobAI {
                         chaseTarget(mob);
                     break;
                 case GuardMinion:
-                    if (!mob.npcOwner.isAlive() || ((Mob) mob.npcOwner).despawned)
+                    if (!mob.guardCaptain.isAlive() || ((Mob) mob.guardCaptain).despawned)
                         randomGuardPatrolPoint(mob);
                     else {
                         if (mob.getCombatTarget() != null) {
@@ -1055,7 +1055,7 @@ public class MobAI {
     public static void GuardMinionLogic(Mob mob) {
 
         try {
-            if (!mob.npcOwner.isAlive()) {
+            if (!mob.guardCaptain.isAlive()) {
 
                 if (mob.getCombatTarget() == null) {
                     CheckForPlayerGuardAggro(mob);
@@ -1074,11 +1074,10 @@ public class MobAI {
                     }
                 }
             }else {
-                if (mob.npcOwner.getCombatTarget() != null)
-                    mob.setCombatTarget(mob.npcOwner.getCombatTarget());
-                else
-                    if (mob.getCombatTarget() != null)
-                        mob.setCombatTarget(null);
+                if (mob.guardCaptain.getCombatTarget() != null)
+                    mob.setCombatTarget(mob.guardCaptain.getCombatTarget());
+                else if (mob.getCombatTarget() != null)
+                    mob.setCombatTarget(null);
             }
             CheckMobMovement(mob);
             CheckForAttack(mob);
@@ -1246,7 +1245,7 @@ public class MobAI {
                 return false;
 
             if (mob.behaviourType.equals(Enum.MobBehaviourType.GuardMinion)) {
-                if (((Mob) mob.npcOwner).building.getCity().cityOutlaws.contains(target.getObjectUUID()) == true) {
+                if (((Mob) mob.guardCaptain).building.getCity().cityOutlaws.contains(target.getObjectUUID()) == true) {
                     return true;
                 }
             } else if (mob.building.getCity().cityOutlaws.contains(target.getObjectUUID()) == true) {
