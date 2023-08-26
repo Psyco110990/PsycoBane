@@ -760,29 +760,12 @@ public class Mob extends AbstractIntelligenceAgent {
         return currentID;
     }
 
-    public float getSpawnX() {
-        return this.statLat;
-    }
-
-    public float getSpawnY() {
-        return this.statAlt;
-    }
-
-    public float getSpawnZ() {
-        return this.statLon;
-    }
-
     public float getSpawnRadius() {
         return this.spawnRadius;
     }
 
     public void setSpawnTime(int value) {
         this.spawnTime = value;
-    }
-
-    //use getSpawnTime instead. This is just for init tables
-    public int getTrueSpawnTime() {
-        return this.spawnTime;
     }
 
     public String getSpawnTimeAsString() {
