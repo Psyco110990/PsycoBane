@@ -1675,9 +1675,13 @@ public class Mob extends AbstractIntelligenceAgent {
 
         // Handle Mobiles within buildings
 
-        if (this.building == null)
-            this.bindLoc = this.parentZone.getLoc().add(this.bindLoc);
-        else {
+        if (this.building == null) {
+
+            // Do not adjust a pet's bindloc.
+
+            if (!this.behaviourType.equals(MobBehaviourType.Pet1))
+                this.bindLoc = this.parentZone.getLoc().add(this.bindLoc);
+        } else {
 
             // Mobiles inside buildings are offset from it not the zone
             // with the exceptions being  mobiles
