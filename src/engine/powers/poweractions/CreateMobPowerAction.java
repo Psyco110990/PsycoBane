@@ -12,7 +12,6 @@ package engine.powers.poweractions;
 import engine.Enum;
 import engine.InterestManagement.WorldGrid;
 import engine.gameManager.DbManager;
-import engine.gameManager.MovementManager;
 import engine.gameManager.NPCManager;
 import engine.gameManager.ZoneManager;
 import engine.math.Vector3fImmutable;
@@ -84,8 +83,6 @@ public class CreateMobPowerAction extends AbstractPowerAction {
                 WorldGrid.RemoveWorldObject(currentPet);
                 currentPet.setCombatTarget(null);
 
-                //if (currentPet.getParentZone() != null)
-                    //currentPet.getParentZone().zoneMobSet.remove(currentPet);
                 seaFloor.zoneMobSet.remove(currentPet);
                 currentPet.playerAgroMap.clear();
 
@@ -95,7 +92,6 @@ public class CreateMobPowerAction extends AbstractPowerAction {
                     Logger.error(e.getMessage());
                 }
 
-                //currentPet.disableIntelligence();
             } else if (currentPet != null && currentPet.isSiege()) {
                 currentPet.agentType = Enum.AIAgentType.MOBILE;
                 currentPet.setOwner(null);
@@ -105,7 +101,6 @@ public class CreateMobPowerAction extends AbstractPowerAction {
                     WorldGrid.updateObject(currentPet);
             }
             //remove 10th pet
-
 
             NPCManager.spawnNecroPet(owner, pet);
 
@@ -137,26 +132,9 @@ public class CreateMobPowerAction extends AbstractPowerAction {
                 NPCManager.resetNecroPets(owner);
             }
         }
-		/*		if(owner.getPet() != null) {
-			if(owner.getPet().getMobBaseID() != 12021 && owner.getPet().getMobBaseID() != 12022) {
-				//if not a necro pet, remove pet
-				WorldGrid.removeWorldObject(owner.getPet());
-				owner.getPet().disableIntelligence();
-				Mob.removePet(owner.getPet().getUUID());
-				owner.setPet(null);
-		}
-		else {
-			//if it is a necro pet, add it to the line and set as mob
-			owner.getPet().setMob();
-		}
-	}*/
 
-        //	if (mobID == 12021 || mobID == 12022) //Necro Pets
-        //	pet.setPet(owner, true);
         owner.setPet(pet);
-        if(pet.isSiege() == false) {
-            MovementManager.translocate(pet, owner.getLoc(), owner.region);
-        }
+
         pet.recalculateStats();
         pet.healthMax = pet.level * 0.5f * 120;
         pet.setHealth(pet.healthMax);

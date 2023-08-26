@@ -552,6 +552,7 @@ public class Mob extends AbstractIntelligenceAgent {
 
         petMinion.level = level;
         petMinion.loadID = loadID;
+        petMinion.bindLoc = petOwner.getLoc();
         petMinion.loc = petOwner.getLoc();
         petMinion.guardCaptain = petOwner;
         petMinion.parentZoneUUID = parent.getObjectUUID();
@@ -562,7 +563,7 @@ public class Mob extends AbstractIntelligenceAgent {
         petMinion.runAfterLoad();
         DbManager.addToCache(petMinion);
         createLock.writeLock().unlock();
-
+        petMinion.setLoc(petMinion.bindLoc);
         return petMinion;
     }
     public static Mob getMob(int id) {
@@ -740,7 +741,6 @@ public class Mob extends AbstractIntelligenceAgent {
     }
 
     public void setOwner(PlayerCharacter value) {
-
 
         this.guardCaptain = value;
     }
