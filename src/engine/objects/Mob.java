@@ -1921,10 +1921,6 @@ public class Mob extends AbstractIntelligenceAgent {
         return isPlayerGuard;
     }
 
-    public void setPlayerGuard(boolean isPlayerGuard) {
-        this.isPlayerGuard = isPlayerGuard;
-    }
-
     public void setPatrolPointIndex(int patrolPointIndex) {
     }
 
