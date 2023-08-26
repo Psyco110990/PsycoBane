@@ -345,14 +345,14 @@ public enum NPCManager {
 
         // Pets are regular mobiles not hirelings (Siege engines)
 
-        if (abstractCharacter.getObjectType().equals(Enum.GameObjectType.Mob)) {
-
+        if (!abstractCharacter.getObjectType().equals(Enum.GameObjectType.Mob))
+            abstractCharacter.building.getHirelings().put(abstractCharacter, buildingSlot);
+        else {
             Mob mobile = (Mob) abstractCharacter;
 
-            if (mobile.isSiege == false)
+            if (!mobile.behaviourType.equals(Enum.MobBehaviourType.SiegeEngine))
                 abstractCharacter.building.getHirelings().put(abstractCharacter, buildingSlot);
-        } else
-            abstractCharacter.building.getHirelings().put(abstractCharacter, buildingSlot);
+        }
 
         // Override bind and location for  this npc derived
         // from BuildingManager slot location data.

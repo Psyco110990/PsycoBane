@@ -77,7 +77,6 @@ public class Mob extends AbstractIntelligenceAgent {
     public float spawnRadius;
     //used by static mobs
     public int parentZoneUUID;
-    public boolean isSiege = false;
     protected int dbID; //the database ID
 
     private int currentID;
@@ -371,7 +370,7 @@ public class Mob extends AbstractIntelligenceAgent {
         writer.putInt(0);
         writer.putInt(0);
 
-        if (!mob.isAlive() && !mob.isPet() && !mob.isNecroPet() && !mob.isSiege && !mob.isPlayerGuard) {
+        if (!mob.isAlive() && !mob.isPet() && !mob.isNecroPet() && !mob.behaviourType.equals(MobBehaviourType.SiegeEngine) && !mob.isPlayerGuard) {
             writer.putInt(0);
             writer.putInt(0);
         }
@@ -382,7 +381,7 @@ public class Mob extends AbstractIntelligenceAgent {
             writer.putInt(2);
             writer.putInt(0x00008A2E);
             writer.putInt(0x1AB84003);
-        } else if (mob.isSiege) {
+        } else if (mob.behaviourType.equals(MobBehaviourType.SiegeEngine)) {
             writer.putInt(1);
             writer.putInt(74620179);
         } else
@@ -685,7 +684,7 @@ public class Mob extends AbstractIntelligenceAgent {
         mob.setObjectTypeMask(MBServerStatics.MASK_MOB | mob.getTypeMasks());
 
         //mob.setMob();
-        mob.setSiege(true);
+        //      mob.setSiege(true);
 
         int slot = 0;
 
@@ -805,9 +804,10 @@ public class Mob extends AbstractIntelligenceAgent {
     @Override
     public Vector3fImmutable getBindLoc() {
 
-        if (this.isPet() && !this.isSiege)
+        if (this.isPet() && !this.behaviourType.equals(MobBehaviourType.SiegeEngine))
             return this.getOwner() != null ? this.getOwner().getLoc() : this.getLoc();
-        return this.bindLoc;
+        else
+            return this.bindLoc;
     }
 
     public void calculateModifiedStats() {
@@ -982,7 +982,7 @@ public class Mob extends AbstractIntelligenceAgent {
         try {
             //resync corpses
             //this.setLoc(this.getMovementLoc());
-            if (this.isSiege) {
+            if (this.behaviourType.equals(MobBehaviourType.SiegeEngine)) {
                 this.deathTime = System.currentTimeMillis();
                 //this.state = STATE.Dead;
                 try {
@@ -1089,7 +1089,7 @@ public class Mob extends AbstractIntelligenceAgent {
         else if (this.building != null)
             this.region = BuildingManager.GetRegion(this.building, bindLoc.x, bindLoc.y, bindLoc.z);
 
-        if (!this.isSiege && !this.isPlayerGuard && contract == null)
+        if (!this.behaviourType.equals(MobBehaviourType.SiegeEngine) && !this.isPlayerGuard && contract == null)
             loadInventory();
 
         this.updateLocation();
@@ -1840,11 +1840,7 @@ public class Mob extends AbstractIntelligenceAgent {
     }
 
     public boolean isSiege() {
-        return isSiege;
-    }
-
-    public void setSiege(boolean isSiege) {
-        this.isSiege = isSiege;
+        return this.behaviourType.equals(MobBehaviourType.SiegeEngine);
     }
 
     public void setNpcOwner(AbstractCharacter npcOwner) {

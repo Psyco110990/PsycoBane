@@ -2846,7 +2846,7 @@ public class Enum {
         //Independent Types
         SimpleStandingGuard(null, false, false, false, false, false),
         Pet1(null, false, false, true, false, false),
-        Siege(null, false, false, true, false, false),
+        SiegeEngine(null, false, false, true, false, false),
         Simple(null, false, false, true, false, false),
         Helpee(null, false, true, true, false, true),
         HelpeeWimpy(null, true, false, true, false, false),
