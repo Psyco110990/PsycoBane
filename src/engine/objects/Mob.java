@@ -1731,7 +1731,7 @@ public class Mob extends AbstractIntelligenceAgent {
             // with the exceptions being  mobiles
             // with a contract.
 
-            if (this.contract != null)
+            if (this.contract != null || this.behaviourType.equals(MobBehaviourType.SiegeEngine))
                 NPCManager.slotCharacterInBuilding(this);
             else
                 this.bindLoc = building.getLoc().add(bindLoc);
