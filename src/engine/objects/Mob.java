@@ -1083,7 +1083,7 @@ public class Mob extends AbstractIntelligenceAgent {
         this.recalculateStats();
         this.setHealth(this.healthMax);
 
-        if (this.building == null && this.guardCaptain != null && ((Mob) this.guardCaptain).behaviourType.ordinal() == MobBehaviourType.GuardCaptain.ordinal())
+        if (this.building == null && this.guardCaptain != null && ((Mob) this.guardCaptain).behaviourType.equals(MobBehaviourType.GuardCaptain))
             this.building = this.guardCaptain.building;
         else if (this.building != null)
             this.region = BuildingManager.GetRegion(this.building, bindLoc.x, bindLoc.y, bindLoc.z);
