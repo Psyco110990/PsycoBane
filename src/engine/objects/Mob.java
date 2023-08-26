@@ -64,14 +64,7 @@ public class Mob extends AbstractIntelligenceAgent {
     public int equipmentSetID = 0;
     public int runeSet = 0;
     public int bootySet = 0;
-    public EnumBitSet<MonsterType> notEnemy = EnumBitSet.noneOf(MonsterType.class);
-    public EnumBitSet<Enum.MonsterType> enemy = EnumBitSet.noneOf(MonsterType.class);
-    ;
-    public MobBehaviourType behaviourType;
-    public ArrayList<Vector3fImmutable> patrolPoints;
-    public int lastPatrolPointIndex = 0;
-    public long stopPatrolTime = 0;
-    public City guardedCity;
+
     public int loadID;
     public float spawnRadius;
     //used by static mobs

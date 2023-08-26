@@ -9,6 +9,7 @@
 
 package engine.objects;
 
+import ch.claude_martin.enumbitset.EnumBitSet;
 import engine.Enum;
 import engine.Enum.GameObjectType;
 import engine.Enum.ModType;
@@ -33,6 +34,14 @@ public abstract class AbstractIntelligenceAgent extends AbstractCharacter {
     public Enum.AIAgentType agentType = Enum.AIAgentType.MOBILE;
     public boolean isPlayerGuard = false;
     public AbstractCharacter guardCaptain;
+    public EnumBitSet<Enum.MonsterType> notEnemy = EnumBitSet.noneOf(Enum.MonsterType.class);
+    public EnumBitSet<Enum.MonsterType> enemy = EnumBitSet.noneOf(Enum.MonsterType.class);
+    ;
+    public Enum.MobBehaviourType behaviourType;
+    public ArrayList<Vector3fImmutable> patrolPoints;
+    public int lastPatrolPointIndex = 0;
+    public long stopPatrolTime = 0;
+    public City guardedCity;
 
     public AbstractIntelligenceAgent() {
         super();
