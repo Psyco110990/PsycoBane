@@ -55,7 +55,6 @@ public class Mob extends AbstractIntelligenceAgent {
     public ReentrantReadWriteLock minionLock = new ReentrantReadWriteLock();
     public boolean despawned = false;
     public Vector3fImmutable destination = Vector3fImmutable.ZERO;
-    public Vector3fImmutable localLoc = Vector3fImmutable.ZERO;
     public LinkedHashMap<Integer, Integer> mobPowers = new LinkedHashMap<>();
     public MobBase mobBase;
     public int spawnTime;
@@ -148,7 +147,6 @@ public class Mob extends AbstractIntelligenceAgent {
             statAlt = rs.getFloat("mob_spawnY");
             statLon = rs.getFloat("mob_spawnZ");
             this.bindLoc = new Vector3fImmutable(statLat, statAlt, statLon);
-            this.localLoc = new Vector3fImmutable(bindLoc);
 
             this.parentZoneUUID = rs.getInt("parent");
             this.level = (short) rs.getInt("mob_level");
