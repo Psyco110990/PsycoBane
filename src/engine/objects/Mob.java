@@ -1643,7 +1643,7 @@ public class Mob extends AbstractIntelligenceAgent {
             // Load AI for wall archers
 
             if (NPC.ISWallArcher(this.contract)) {
-                this.gridObjectType = GridObjectType.STATIC;
+                this.gridObjectType = GridObjectType.DYNAMIC;
                 this.behaviourType = MobBehaviourType.GuardWallArcher;
                 this.isPlayerGuard = true;
                 this.spawnTime = 450;
