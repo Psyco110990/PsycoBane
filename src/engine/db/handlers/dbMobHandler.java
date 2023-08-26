@@ -28,7 +28,7 @@ public class dbMobHandler extends dbHandlerBase {
         this.localObjectType = engine.Enum.GameObjectType.valueOf(this.localClass.getSimpleName());
     }
 
-    public Mob ADD_MOB(Mob toAdd) {
+    public Mob PERSIST(Mob toAdd) {
 
         Mob mobile = null;
 

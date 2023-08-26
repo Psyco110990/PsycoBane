@@ -427,7 +427,7 @@ public class Mob extends AbstractIntelligenceAgent {
         Mob mob;
 
         try {
-            mob = DbManager.MobQueries.ADD_MOB(mobile);
+            mob = DbManager.MobQueries.PERSIST(mobile);
 
         } catch (Exception e) {
             Logger.error("SQLException:" + e.getMessage());
