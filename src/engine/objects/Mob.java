@@ -559,7 +559,7 @@ public class Mob extends AbstractIntelligenceAgent {
         petMinion.walkMode = false;
         petMinion.healthMax = petMinion.getMobBase().getHealthMax() * (petMinion.level * 0.5f);
         petMinion.health.set(petMinion.healthMax);
-
+        petMinion.behaviourType = MobBehaviourType.Pet1;
         petMinion.runAfterLoad();
         DbManager.addToCache(petMinion);
         createLock.writeLock().unlock();
