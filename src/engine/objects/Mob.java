@@ -2002,42 +2002,4 @@ public class Mob extends AbstractIntelligenceAgent {
         }
     }
 
-    public void dismiss() {
-
-        if (this.isPet()) {
-
-            if ((this.agentType.equals(AIAgentType.PET))) { //delete summoned pet
-                this.despawn();
-                WorldGrid.RemoveWorldObject(this);
-                DbManager.removeFromCache(this);
-
-                if (this.getObjectType() == GameObjectType.Mob)
-                    if (this.getParentZone() != null)
-                        this.getParentZone().zoneMobSet.remove(this);
-
-            } else { //revert charmed pet
-                this.agentType = AIAgentType.MOBILE;
-                this.setCombatTarget(null);
-            }
-            //clear owner
-
-            PlayerCharacter owner = this.getOwner();
-
-            //close pet window
-
-            if (owner != null) {
-                Mob pet = owner.getPet();
-                PetMsg pm = new PetMsg(5, null);
-                Dispatch dispatch = Dispatch.borrow(owner, pm);
-                DispatchMessage.dispatchMsgDispatch(dispatch, Enum.DispatchChannel.SECONDARY);
-
-                if (pet != null && pet.getObjectUUID() == this.getObjectUUID())
-                    owner.setPet(null);
-
-                if (this.getObjectType().equals(GameObjectType.Mob))
-                    this.setOwner(null);
-            }
-        }
-    }
-
 }

@@ -408,4 +408,5 @@ public enum NPCManager {
         }
         return maxSlots;
     }
+
 }
