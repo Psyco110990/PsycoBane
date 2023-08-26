@@ -350,6 +350,8 @@ public enum NPCManager {
         else {
             Mob mobile = (Mob) abstractCharacter;
 
+            // Siege engines are not hirelings but minions of said hireling.
+
             if (!mobile.behaviourType.equals(Enum.MobBehaviourType.SiegeEngine))
                 abstractCharacter.building.getHirelings().put(abstractCharacter, buildingSlot);
         }
