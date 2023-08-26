@@ -80,9 +80,7 @@ public class Mob extends AbstractIntelligenceAgent {
     public int parentZoneUUID;
     public boolean isSiege = false;
     protected int dbID; //the database ID
-    protected float statLat;
-    protected float statLon;
-    protected float statAlt;
+
     private int currentID;
     private int ownerUID = 0; //only used by pets
     private AbstractWorldObject fearedObject = null;
@@ -127,7 +125,7 @@ public class Mob extends AbstractIntelligenceAgent {
         if (building != null && building.getOwner() != null) {
             this.lastName = "the " + contract.getName();
         }
-        clearStatic();
+
     }
 
     /**
@@ -142,7 +140,7 @@ public class Mob extends AbstractIntelligenceAgent {
         this.parentZoneUUID = (parent != null) ? parent.getObjectUUID() : 0;
         this.ownerUID = owner.getObjectUUID();
         this.behaviourType = Enum.MobBehaviourType.Pet1;
-        clearStatic();
+
     }
 
     //SIEGE CONSTRUCTOR
@@ -155,7 +153,6 @@ public class Mob extends AbstractIntelligenceAgent {
         this.parentZoneUUID = (parent != null) ? parent.getObjectUUID() : 0;
         this.ownerUID = 0;
         this.equip = new HashMap<>();
-        clearStatic();
     }
 
     /**
@@ -165,17 +162,22 @@ public class Mob extends AbstractIntelligenceAgent {
 
         super(rs);
 
+        float statLat;
+        float statAlt;
+        float statLon;
+
         try {
             this.dbID = rs.getInt(1);
             this.loadID = rs.getInt("mob_mobbaseID");
             this.gridObjectType = GridObjectType.DYNAMIC;
             this.spawnRadius = rs.getFloat("mob_spawnRadius");
             this.spawnTime = rs.getInt("mob_spawnTime");
-            this.statLat = rs.getFloat("mob_spawnX");
-            this.statAlt = rs.getFloat("mob_spawnY");
-            this.statLon = rs.getFloat("mob_spawnZ");
 
-            this.localLoc = new Vector3fImmutable(this.statLat, this.statAlt, this.statLon);
+            statLat = rs.getFloat("mob_spawnX");
+            statAlt = rs.getFloat("mob_spawnY");
+            statLon = rs.getFloat("mob_spawnZ");
+            this.bindLoc = new Vector3fImmutable(statLat, statAlt, statLon);
+            this.localLoc = new Vector3fImmutable(bindLoc);
 
             this.parentZoneUUID = rs.getInt("parent");
             this.level = (short) rs.getInt("mob_level");
@@ -203,8 +205,6 @@ public class Mob extends AbstractIntelligenceAgent {
 
             if (this.mobBase != null && this.spawnTime == 0)
                 this.spawnTime = this.mobBase.getSpawnTime();
-
-            this.bindLoc = new Vector3fImmutable(this.statLat, this.statAlt, this.statLon);
 
             this.runeSet = rs.getInt("runeSet");
             this.bootySet = rs.getInt("bootySet");
@@ -728,16 +728,6 @@ public class Mob extends AbstractIntelligenceAgent {
         return mob;
     }
 
-    private void clearStatic() {
-
-        if (this.parentZone != null)
-            this.parentZone.zoneMobSet.remove(this);
-
-        this.parentZone = null;
-        this.statLat = 0f;
-        this.statLon = 0f;
-        this.statAlt = 0f;
-    }
 
     /*
      * Getters
