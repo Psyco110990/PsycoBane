@@ -541,7 +541,7 @@ public class Mob extends AbstractIntelligenceAgent {
         return siegeMinion;
     }
 
-    public static Mob createPetMinion(int loadID, Guild guild, Zone parent, PlayerCharacter petOwner, short level) {
+    public static Mob createPetMinion(int loadID, Zone parent, PlayerCharacter petOwner, short level) {
 
         Mob petMinion = new Mob();
 

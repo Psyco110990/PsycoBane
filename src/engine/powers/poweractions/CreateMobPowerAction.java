@@ -74,7 +74,7 @@ public class CreateMobPowerAction extends AbstractPowerAction {
             return;
 
         //create Pet
-        Mob pet = Mob.createPetMinion(mobID, guild, seaFloor, owner, (short) mobLevel);
+        Mob pet = Mob.createPetMinion(mobID, seaFloor, owner, (short) mobLevel);
 
 
         if (pet.getMobBaseID() == 12021 || pet.getMobBaseID() == 12022) { //is a necro pet
