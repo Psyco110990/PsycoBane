@@ -31,7 +31,8 @@ public abstract class AbstractIntelligenceAgent extends AbstractCharacter {
     protected Vector3fImmutable lastBindLoc;
     public boolean assist = false;
     public Enum.AIAgentType agentType = Enum.AIAgentType.MOBILE;
-
+    public boolean isPlayerGuard = false;
+    public AbstractCharacter guardCaptain;
 
     public AbstractIntelligenceAgent() {
         super();
@@ -114,14 +115,6 @@ public abstract class AbstractIntelligenceAgent extends AbstractCharacter {
         return 0;
     }
 
-    public PlayerCharacter getOwner() {
-
-        if (this.getObjectType().equals(GameObjectType.Mob))
-            return this.getOwner();
-
-        return null;
-    }
-
     public boolean getSafeZone() {
 
         ArrayList<Zone> allIn = ZoneManager.getAllZonesIn(this.getLoc());
@@ -162,7 +155,7 @@ public abstract class AbstractIntelligenceAgent extends AbstractCharacter {
 
             //clear owner
 
-            PlayerCharacter owner = this.getOwner();
+            PlayerCharacter owner = (PlayerCharacter) this.guardCaptain;
 
             //close pet window
 

@@ -60,8 +60,6 @@ public class Mob extends AbstractIntelligenceAgent {
     public int spawnTime;
     public Zone parentZone;
     public boolean hasLoot = false;
-    public boolean isPlayerGuard = false;
-    public AbstractCharacter guardCaptain;
     public long deathTime = 0;
     public int equipmentSetID = 0;
     public int runeSet = 0;
@@ -81,7 +79,7 @@ public class Mob extends AbstractIntelligenceAgent {
     protected int dbID; //the database ID
 
     private int currentID;
-    private int ownerUID = 0; //only used by pets
+
     private AbstractWorldObject fearedObject = null;
     private long lastAttackTime = 0;
     private int lastMobPowerToken = 0;
@@ -100,20 +98,6 @@ public class Mob extends AbstractIntelligenceAgent {
         this.gridObjectType = GridObjectType.DYNAMIC;
     }
 
-    /**
-     * Pet Constructor
-     */
-    public Mob(MobBase mobBase, Guild guild, Zone parent, short level, PlayerCharacter owner, int tableID) {
-        super(mobBase.getFirstName(), "", (short) 0, (short) 0, (short) 0, (short) 0, (short) 0, level, 0, false, true, false, owner.getLoc(), owner.getLoc(), owner.getFaceDir(), (short) mobBase.getHealthMax(), (short) 0, (short) 0, guild, (byte) 0, tableID);
-        this.dbID = tableID;
-        this.loadID = mobBase.getObjectUUID();
-        this.mobBase = mobBase;
-        this.parentZone = parent;
-        this.parentZoneUUID = (parent != null) ? parent.getObjectUUID() : 0;
-        this.ownerUID = owner.getObjectUUID();
-        this.behaviourType = Enum.MobBehaviourType.Pet1;
-
-    }
 
     /**
      * ResultSet Constructor
@@ -460,130 +444,6 @@ public class Mob extends AbstractIntelligenceAgent {
         return mob;
     }
 
-    public static Mob createPet(int loadID, Guild guild, Zone parent, PlayerCharacter owner, short level) {
-        MobBase mobBase = MobBase.getMobBase(loadID);
-        Mob mob = null;
-
-        if (mobBase == null || owner == null)
-            return null;
-
-        createLock.writeLock().lock();
-        level += 20;
-
-        try {
-            mob = new Mob(mobBase, guild, parent, level, owner, 0);
-            if (mob.mobBase == null)
-                return null;
-            mob.runAfterLoad();
-            Vector3fImmutable loc = owner.getLoc();
-            DbManager.addToCache(mob);
-            mob.setPet(owner, true);
-            mob.setWalkMode(false);
-
-        } catch (Exception e) {
-            Logger.error(e);
-        } finally {
-            createLock.writeLock().unlock();
-        }
-        parent.zoneMobSet.add(mob);
-        mob.level = level;
-        mob.healthMax = mob.getMobBase().getHealthMax() * (mob.level * 0.5f);
-        mob.health.set(mob.healthMax);
-        return mob;
-    }
-
-    public static Mob getMob(int id) {
-
-        if (id == 0)
-            return null;
-
-        Mob mob = (Mob) DbManager.getFromCache(GameObjectType.Mob, id);
-        if (mob != null)
-            return mob;
-        return DbManager.MobQueries.GET_MOB(id);
-    }
-
-    public static Mob getFromCache(int id) {
-
-
-        return (Mob) DbManager.getFromCache(GameObjectType.Mob, id);
-    }
-
-    private static float getModifiedAmount(CharacterSkill skill) {
-
-        if (skill == null)
-            return 0f;
-
-        return skill.getModifiedAmount();
-    }
-
-    public static void HandleAssistedAggro(PlayerCharacter source, PlayerCharacter target) {
-
-        HashSet<AbstractWorldObject> mobsInRange = WorldGrid.getObjectsInRangePartial(source, MobAIThread.AI_DROP_AGGRO_RANGE, MBServerStatics.MASK_MOB);
-
-        for (AbstractWorldObject awo : mobsInRange) {
-            Mob mob = (Mob) awo;
-
-            //Mob is not attacking anyone, skip.
-            if (mob.getCombatTarget() == null)
-                continue;
-
-            //Mob not attacking target's target, let's not be failmu and skip this target.
-            if (mob.getCombatTarget() != target)
-                continue;
-
-            //target is mob's combat target, LETS GO.
-
-            if (source.getHateValue() > target.getHateValue())
-                mob.setCombatTarget(source);
-        }
-    }
-
-    public static void submitUpgradeJob(Mob mob) {
-
-        if (mob.getUpgradeDateTime() == null) {
-            Logger.error("Failed to get Upgrade Date");
-            return;
-        }
-
-        // Submit upgrade job for future date or current instant
-
-        if (mob.getUpgradeDateTime().isAfter(DateTime.now()))
-            JobScheduler.getInstance().scheduleJob(new UpgradeNPCJob(mob), mob.getUpgradeDateTime().getMillis());
-        else
-            JobScheduler.getInstance().scheduleJob(new UpgradeNPCJob(mob), 0);
-
-    }
-
-    public static int getUpgradeTime(Mob mob) {
-
-        if (mob.getRank() < 7)
-            return (mob.getRank() * 8);
-
-        return 0;
-    }
-
-    public static int getUpgradeCost(Mob mob) {
-
-        int upgradeCost;
-
-        upgradeCost = Integer.MAX_VALUE;
-
-        if (mob.getRank() < 7)
-            return (mob.getRank() * 100650) + 21450;
-
-        return upgradeCost;
-    }
-
-    public static void setUpgradeDateTime(Mob mob, DateTime upgradeDateTime) {
-
-        if (!DbManager.MobQueries.updateUpgradeTime(mob, upgradeDateTime)) {
-            Logger.error("Failed to set upgradeTime for building " + mob.currentID);
-            return;
-        }
-        mob.upgradeDateTime = upgradeDateTime;
-    }
-
     public static synchronized Mob createGuardMinion(Mob guardCaptain, short level, String minionName) {
 
         Mob minionMobile;
@@ -688,6 +548,122 @@ public class Mob extends AbstractIntelligenceAgent {
         return siegeMinion;
     }
 
+    public static Mob createPetMinion(int loadID, Guild guild, Zone parent, PlayerCharacter petOwner, short level) {
+
+        Mob petMinion = new Mob();
+
+        if (petOwner == null)
+            return null;
+
+        createLock.writeLock().lock();
+
+        petMinion.level = level;
+        petMinion.loadID = loadID;
+        petMinion.loc = petOwner.getLoc();
+        petMinion.guardCaptain = petOwner;
+        petMinion.parentZoneUUID = parent.getObjectUUID();
+        petMinion.walkMode = false;
+        petMinion.healthMax = petMinion.getMobBase().getHealthMax() * (petMinion.level * 0.5f);
+        petMinion.health.set(petMinion.healthMax);
+
+        petMinion.runAfterLoad();
+        DbManager.addToCache(petMinion);
+        createLock.writeLock().unlock();
+
+        return petMinion;
+    }
+    public static Mob getMob(int id) {
+
+        if (id == 0)
+            return null;
+
+        Mob mob = (Mob) DbManager.getFromCache(GameObjectType.Mob, id);
+        if (mob != null)
+            return mob;
+        return DbManager.MobQueries.GET_MOB(id);
+    }
+
+    public static Mob getFromCache(int id) {
+
+
+        return (Mob) DbManager.getFromCache(GameObjectType.Mob, id);
+    }
+
+    private static float getModifiedAmount(CharacterSkill skill) {
+
+        if (skill == null)
+            return 0f;
+
+        return skill.getModifiedAmount();
+    }
+
+    public static void HandleAssistedAggro(PlayerCharacter source, PlayerCharacter target) {
+
+        HashSet<AbstractWorldObject> mobsInRange = WorldGrid.getObjectsInRangePartial(source, MobAIThread.AI_DROP_AGGRO_RANGE, MBServerStatics.MASK_MOB);
+
+        for (AbstractWorldObject awo : mobsInRange) {
+            Mob mob = (Mob) awo;
+
+            //Mob is not attacking anyone, skip.
+            if (mob.getCombatTarget() == null)
+                continue;
+
+            //Mob not attacking target's target, let's not be failmu and skip this target.
+            if (mob.getCombatTarget() != target)
+                continue;
+
+            //target is mob's combat target, LETS GO.
+
+            if (source.getHateValue() > target.getHateValue())
+                mob.setCombatTarget(source);
+        }
+    }
+
+    public static void submitUpgradeJob(Mob mob) {
+
+        if (mob.getUpgradeDateTime() == null) {
+            Logger.error("Failed to get Upgrade Date");
+            return;
+        }
+
+        // Submit upgrade job for future date or current instant
+
+        if (mob.getUpgradeDateTime().isAfter(DateTime.now()))
+            JobScheduler.getInstance().scheduleJob(new UpgradeNPCJob(mob), mob.getUpgradeDateTime().getMillis());
+        else
+            JobScheduler.getInstance().scheduleJob(new UpgradeNPCJob(mob), 0);
+
+    }
+
+    public static int getUpgradeTime(Mob mob) {
+
+        if (mob.getRank() < 7)
+            return (mob.getRank() * 8);
+
+        return 0;
+    }
+
+    public static int getUpgradeCost(Mob mob) {
+
+        int upgradeCost;
+
+        upgradeCost = Integer.MAX_VALUE;
+
+        if (mob.getRank() < 7)
+            return (mob.getRank() * 100650) + 21450;
+
+        return upgradeCost;
+    }
+
+    public static void setUpgradeDateTime(Mob mob, DateTime upgradeDateTime) {
+
+        if (!DbManager.MobQueries.updateUpgradeTime(mob, upgradeDateTime)) {
+            Logger.error("Failed to set upgradeTime for building " + mob.currentID);
+            return;
+        }
+        mob.upgradeDateTime = upgradeDateTime;
+    }
+
 
     /*
      * Getters
@@ -764,24 +740,16 @@ public class Mob extends AbstractIntelligenceAgent {
         return this.guild.getObjectUUID();
     }
 
-    @Override
     public PlayerCharacter getOwner() {
 
-        if (!this.isPet())
-            return null;
 
-        if (this.ownerUID == 0)
-            return null;
-
-        return PlayerCharacter.getFromCache(this.ownerUID);
+        return (PlayerCharacter) this.guardCaptain;
     }
 
     public void setOwner(PlayerCharacter value) {
 
-        if (value == null)
-            this.ownerUID = 0;
-        else
-            this.ownerUID = value.getObjectUUID();
+
+        this.guardCaptain = value;
     }
 
     public void setFearedObject(AbstractWorldObject awo) {
