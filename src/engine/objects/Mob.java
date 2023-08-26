@@ -100,35 +100,6 @@ public class Mob extends AbstractIntelligenceAgent {
     }
 
     /**
-     * No Id Constructor
-     */
-    public Mob(String firstName, String lastName, short statStrCurrent, short statDexCurrent, short statConCurrent, short statIntCurrent, short statSpiCurrent, short level, int exp, boolean sit, boolean walk, boolean combat, Vector3fImmutable bindLoc, Vector3fImmutable currentLoc, Vector3fImmutable faceDir, short healthCurrent, short manaCurrent, short stamCurrent, Guild guild, byte runningTrains, int npcType, boolean isMob, Zone parent, Building building, int contractID) {
-        super(firstName, lastName, statStrCurrent, statDexCurrent, statConCurrent, statIntCurrent, statSpiCurrent, level, exp, sit, walk, combat, bindLoc, currentLoc, faceDir, healthCurrent, manaCurrent, stamCurrent, guild, runningTrains);
-
-        this.dbID = MBServerStatics.NO_DB_ROW_ASSIGNED_YET;
-        this.loadID = npcType;
-        this.mobBase = MobBase.getMobBase(loadID);
-        this.dbID = MBServerStatics.NO_DB_ROW_ASSIGNED_YET;
-        this.parentZone = parent;
-        this.parentZoneUUID = (parent != null) ? parent.getObjectUUID() : 0;
-        this.building = building;
-
-        if (building != null)
-            this.buildingUUID = building.getObjectUUID();
-        else
-            this.buildingUUID = 0;
-
-        if (contractID == 0)
-            this.contract = null;
-        else
-            this.contract = DbManager.ContractQueries.GET_CONTRACT(contractID);
-        if (building != null && building.getOwner() != null) {
-            this.lastName = "the " + contract.getName();
-        }
-
-    }
-
-    /**
      * Pet Constructor
      */
     public Mob(MobBase mobBase, Guild guild, Zone parent, short level, PlayerCharacter owner, int tableID) {
