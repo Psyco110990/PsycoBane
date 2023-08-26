@@ -612,7 +612,8 @@ public class Mob extends AbstractIntelligenceAgent {
         minionMobile.loadID = guardCaptain.loadID;
         minionMobile.firstName = minionName;
         minionMobile.equipmentSetID = guardCaptain.equipmentSetID;
-
+        minionMobile.buildingUUID = guardCaptain.building.getObjectUUID();
+        minionMobile.guildUUID = guardCaptain.guildUUID;
         minionMobile.runeSet = guardCaptain.runeSet;
         minionMobile.enemy = guardCaptain.enemy;
         minionMobile.notEnemy = guardCaptain.notEnemy;
@@ -1729,10 +1730,10 @@ public class Mob extends AbstractIntelligenceAgent {
             // with the exceptions being  mobiles
             // with a contract.
 
-            this.bindLoc = building.getLoc().add(bindLoc);
-
-            if (this.contract != null || this.isSiege)
+            if (this.contract != null)
                 NPCManager.slotCharacterInBuilding(this);
+            else
+                this.bindLoc = building.getLoc().add(bindLoc);
         }
 
         // Setup location for this Mobile
@@ -1806,8 +1807,10 @@ public class Mob extends AbstractIntelligenceAgent {
                     Vector3fImmutable newPatrolPoint = Vector3fImmutable.getRandomPointInCircle(this.getBindLoc(), patrolRadius);
                     this.patrolPoints.add(newPatrolPoint);
 
-                    if (i == 1)
-                        MovementManager.translocate(this, newPatrolPoint, null);
+                    if (i == 1) {
+                        this.loc = newPatrolPoint;
+                        this.endLoc = newPatrolPoint;
+                    }
                 }
             }
 
