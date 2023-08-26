@@ -550,7 +550,7 @@ public class Mob extends AbstractIntelligenceAgent {
 
         createLock.writeLock().lock();
 
-        petMinion.level = level;
+        petMinion.level = (short) (level + 20);
         petMinion.loadID = loadID;
         petMinion.bindLoc = petOwner.getLoc();
         petMinion.loc = petOwner.getLoc();
