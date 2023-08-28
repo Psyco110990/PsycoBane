@@ -446,11 +446,6 @@ public class Mob extends AbstractIntelligenceAgent {
 
         Mob minionMobile;
 
-        int maxSlots = NPCManager.getMaxMinions(guardCaptain);
-
-        if (guardCaptain.siegeMinionMap.size() == maxSlots)
-            return null;
-
         minionMobile = new Mob();
         minionMobile.currentID = (--Mob.staticID);
 
