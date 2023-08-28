@@ -341,18 +341,21 @@ public enum NPCManager {
 
         if (abstractCharacter.building.getBlueprint() != null && abstractCharacter.building.getBlueprint().getBuildingGroup().equals(Enum.BuildingGroup.TOL) && abstractCharacter.building.getRank() == 8)
             buildingSlot = BuildingManager.getLastAvailableSlot(abstractCharacter.building);
-        else {
-            if(abstractCharacter.getObjectType().equals(Enum.GameObjectType.Mob) && ((Mob)abstractCharacter).behaviourType.equals(Enum.MobBehaviourType.SiegeEngine)) {
-                Mob mob = (Mob)abstractCharacter;
-                buildingSlot = mob.guardCaptain.siegeMinionMap.size() + 2;
-            }else
-                buildingSlot = BuildingManager.getAvailableSlot(abstractCharacter.building);
+        else
+            buildingSlot = BuildingManager.getAvailableSlot(abstractCharacter.building);
+
+        // Override slot for siege engines
+
+        if (abstractCharacter.getObjectType().equals(Enum.GameObjectType.Mob) && ((Mob) abstractCharacter).behaviourType.equals(Enum.MobBehaviourType.SiegeEngine)) {
+            Mob siegeMobile = (Mob) abstractCharacter;
+            buildingSlot = siegeMobile.guardCaptain.siegeMinionMap.size() + 2;
         }
+
         if (buildingSlot == -1)
             Logger.error("No available slot for NPC: " + abstractCharacter.getObjectUUID());
 
         // Pets are regular mobiles not hirelings (Siege engines)
-        if(abstractCharacter.contract != null)
+        if (abstractCharacter.contract != null)
             abstractCharacter.building.getHirelings().put(abstractCharacter, buildingSlot);
 
         // Override bind and location for  this npc derived
