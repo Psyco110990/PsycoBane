@@ -522,7 +522,8 @@ public class Mob extends AbstractIntelligenceAgent {
         siegeMinion.parentZoneUUID = artyCaptain.parentZoneUUID;
         siegeMinion.behaviourType = MobBehaviourType.SiegeEngine;
         siegeMinion.bindLoc = Vector3fImmutable.ZERO;
-        siegeMinion.spawnTime = (60 * 15);
+        //siegeMinion.spawnTime = (60 * 15);
+        siegeMinion.spawnTime = 15;
 
         int slot = 0;
 
