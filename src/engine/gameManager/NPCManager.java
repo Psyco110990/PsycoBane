@@ -348,7 +348,7 @@ public enum NPCManager {
 
         if (abstractCharacter.getObjectType().equals(Enum.GameObjectType.Mob) && ((Mob) abstractCharacter).behaviourType.equals(Enum.MobBehaviourType.SiegeEngine)) {
             Mob siegeMobile = (Mob) abstractCharacter;
-            buildingSlot = siegeMobile.guardCaptain.siegeMinionMap.size() + 2;
+            buildingSlot = siegeMobile.guardCaptain.siegeMinionMap.size() + 1;
         }
 
         if (buildingSlot == -1)
