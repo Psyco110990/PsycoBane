@@ -509,6 +509,7 @@ public class Mob extends AbstractIntelligenceAgent {
         Mob siegeMinion;
 
         siegeMinion = new Mob();
+        siegeMinion.currentID = (--Mob.staticID);
 
         siegeMinion.level = 1;
         siegeMinion.loadID = loadID;
