@@ -120,6 +120,7 @@ public abstract class AbstractCharacter extends AbstractWorldObject {
     private float hateValue = 0;
     private long lastHateUpdate = 0;
     private byte aoecntr = 0;
+    public final ConcurrentHashMap<Mob, Integer> siegeMinionMap = new ConcurrentHashMap<>(MBServerStatics.CHM_INIT_CAP, MBServerStatics.CHM_LOAD, MBServerStatics.CHM_THREAD_LOW);
 
     public AbstractCharacter() {
         super();

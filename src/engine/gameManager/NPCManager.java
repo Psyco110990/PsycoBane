@@ -341,9 +341,14 @@ public enum NPCManager {
 
         if (abstractCharacter.building.getBlueprint() != null && abstractCharacter.building.getBlueprint().getBuildingGroup().equals(Enum.BuildingGroup.TOL) && abstractCharacter.building.getRank() == 8)
             buildingSlot = BuildingManager.getLastAvailableSlot(abstractCharacter.building);
-        else
-            buildingSlot = BuildingManager.getAvailableSlot(abstractCharacter.building);
-
+        else {
+            if(abstractCharacter.getObjectType().equals(Enum.GameObjectType.Mob) && ((Mob)abstractCharacter).behaviourType.equals(Enum.MobBehaviourType.SiegeEngine)) {
+                Mob mob = (Mob)abstractCharacter;
+                buildingSlot = mob.guardCaptain.siegeMinionMap.size() + 1;
+            }else {
+                buildingSlot = BuildingManager.getAvailableSlot(abstractCharacter.building);
+            }
+        }
         if (buildingSlot == -1)
             Logger.error("No available slot for NPC: " + abstractCharacter.getObjectUUID());
 

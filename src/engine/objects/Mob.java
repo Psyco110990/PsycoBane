@@ -48,7 +48,7 @@ public class Mob extends AbstractIntelligenceAgent {
     private static int staticID = 0;
     //mob specific
     public final ConcurrentHashMap<Integer, Boolean> playerAgroMap = new ConcurrentHashMap<>();
-    public final ConcurrentHashMap<Mob, Integer> siegeMinionMap = new ConcurrentHashMap<>(MBServerStatics.CHM_INIT_CAP, MBServerStatics.CHM_LOAD, MBServerStatics.CHM_THREAD_LOW);
+
     public final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
     public long nextCastTime = 0;
     public long nextCallForHelp = 0;
@@ -73,7 +73,7 @@ public class Mob extends AbstractIntelligenceAgent {
 
     private int currentID;
 
-    private AbstractWorldObject fearedObject = null;
+    public AbstractWorldObject fearedObject = null;
     private long lastAttackTime = 0;
     private int lastMobPowerToken = 0;
     private HashMap<Integer, MobEquipment> equip = null;
@@ -735,10 +735,6 @@ public class Mob extends AbstractIntelligenceAgent {
             return 0;
 
         return this.guild.getObjectUUID();
-    }
-
-    public void setFearedObject(AbstractWorldObject awo) {
-        this.fearedObject = awo;
     }
 
     @Override
