@@ -41,7 +41,6 @@ public class MinionTrainingMsgHandler extends AbstractClientMsgHandler {
 
         if (player == null)
             return true;
-
         if (minionMsg.getNpcType() == Enum.GameObjectType.NPC.ordinal()) {
 
             NPC npc = NPC.getFromCache(minionMsg.getNpcID());
@@ -62,10 +61,10 @@ public class MinionTrainingMsgHandler extends AbstractClientMsgHandler {
 
                         Mob toRemove = Mob.getFromCache(minionMsg.getUUID());
 
-                        if (!npc.getSiegeMinionMap().containsKey(toRemove))
+                        if (!npc.siegeMinionMap.containsKey(toRemove))
                             return true;
 
-                        npc.getSiegeMinionMap().remove(toRemove);
+                        npc.siegeMinionMap.remove(toRemove);
 
                         WorldGrid.RemoveWorldObject(toRemove);
 
@@ -118,7 +117,7 @@ public class MinionTrainingMsgHandler extends AbstractClientMsgHandler {
                         if (npc.getContractID() == 842)
                             maxSlots = 1;
 
-                        if (npc.getSiegeMinionMap().size() == maxSlots)
+                        if (npc.siegeMinionMap.size() == maxSlots)
                             return true;
 
                         int mobBase;

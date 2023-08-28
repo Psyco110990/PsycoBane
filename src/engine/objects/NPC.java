@@ -1103,10 +1103,6 @@ public class NPC extends AbstractCharacter {
         return (int) time;
     }
 
-    public ConcurrentHashMap<Mob, Integer> getSiegeMinionMap() {
-        return siegeMinionMap;
-    }
-
     public boolean remove() {
 
         Building building;

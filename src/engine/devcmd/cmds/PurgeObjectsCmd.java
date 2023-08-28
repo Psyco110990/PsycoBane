@@ -59,7 +59,7 @@ public class PurgeObjectsCmd extends AbstractDevCmd {
 
 
                 if (npc != null) {
-                    for (Mob mob : npc.getSiegeMinionMap().keySet()) {
+                    for (Mob mob : npc.siegeMinionMap.keySet()) {
                         WorldGrid.RemoveWorldObject(mob);
                         WorldGrid.removeObject(mob, pc);
                         //Mob.getRespawnMap().remove(mob);
@@ -151,7 +151,7 @@ public class PurgeObjectsCmd extends AbstractDevCmd {
 
 
             if (npc != null) {
-                for (Mob mob : npc.getSiegeMinionMap().keySet()) {
+                for (Mob mob : npc.siegeMinionMap.keySet()) {
                     WorldGrid.RemoveWorldObject(mob);
                     WorldGrid.removeObject(mob, pc);
                     //Mob.getRespawnMap().remove(mob);

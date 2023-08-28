@@ -528,8 +528,8 @@ public class Mob extends AbstractIntelligenceAgent {
         siegeMinion.setLoc(siegeMinion.bindLoc);
         siegeMinion.despawn();
 
-        int slot = artyCaptain.getSiegeMinionMap().size() + 1;
-        artyCaptain.getSiegeMinionMap().put(siegeMinion, slot);
+        int slot = artyCaptain.siegeMinionMap.size() + 1;
+        artyCaptain.siegeMinionMap.put(siegeMinion, slot);
 
         return siegeMinion;
     }

@@ -154,7 +154,7 @@ public class RemoveObjectCmd extends AbstractDevCmd {
                 mobA = (Mob) ac;
 
             if (npc != null) {
-                for (Mob mob : npc.getSiegeMinionMap().keySet()) {
+                for (Mob mob : npc.siegeMinionMap.keySet()) {
                     WorldGrid.RemoveWorldObject(mob);
                     WorldGrid.removeObject(mob, pc);
                     //Mob.getRespawnMap().remove(mob);
@@ -209,7 +209,7 @@ public class RemoveObjectCmd extends AbstractDevCmd {
         if (npc.building != null)
             npc.building.getHirelings().remove(npc);
 
-        for (Mob mob : npc.getSiegeMinionMap().keySet()) {
+        for (Mob mob : npc.siegeMinionMap.keySet()) {
             WorldGrid.RemoveWorldObject(mob);
             WorldGrid.removeObject(mob, pc);
             if (mob.getParentZone() != null)

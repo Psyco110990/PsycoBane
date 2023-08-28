@@ -343,7 +343,7 @@ public class ManageNPCMsg extends ClientNetMsg {
                         writer.putInt(0); //runemaster list
 
                         //artillery captain list
-                        ConcurrentHashMap<Mob, Integer> siegeMinions = npc.getSiegeMinionMap();
+                        ConcurrentHashMap<Mob, Integer> siegeMinions = npc.siegeMinionMap;
                         writer.putInt(1 + siegeMinions.size());
                         serializeBulwarkList(writer, 1); //Trebuchet
                         //serializeBulwarkList(writer, 2); //Ballista
