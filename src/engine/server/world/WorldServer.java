@@ -334,7 +334,7 @@ public class WorldServer {
 		DbManager.PromotionQueries.GET_ALL_PROMOTIONS();
 
 		Logger.info("Loading NPC and Mob Rune Sets");
-		NPCManager.LoadAllRuneSets();
+		NPCManager._runeSetMap = DbManager.ItemBaseQueries.LOAD_RUNES_FOR_NPC_AND_MOBS();
 
 		Logger.info("Loading Booty Sets");
 		LootManager._bootySetMap = DbManager.LootQueries.LOAD_BOOTY_TABLES();
