@@ -1110,7 +1110,7 @@ public class MobAI {
         try {
 
 
-            if ((PlayerCharacter) mob.guardCaptain == null && mob.isNecroPet() == false && mob.isSiege() == false)
+            if (mob.guardCaptain == null && mob.isNecroPet() == false && mob.isSiege() == false)
                 if (ZoneManager.getSeaFloor().zoneMobSet.contains(mob))
                     mob.killCharacter("no owner");
 
