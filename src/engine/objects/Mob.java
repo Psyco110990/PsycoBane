@@ -525,14 +525,8 @@ public class Mob extends AbstractIntelligenceAgent {
         //siegeMinion.spawnTime = (60 * 15);
         siegeMinion.spawnTime = 15;
 
-        int slot = 0;
-
-        if (!artyCaptain.getSiegeMinionMap().containsValue(1))
-            slot = 1;
-        else if (!artyCaptain.getSiegeMinionMap().containsValue(2))
-            slot = 2;
-
-        artyCaptain.getSiegeMinionMap().put(siegeMinion, slot);
+        int slot = artyCaptain.getSiegeMinionMap().size() + 1;
+        artyCaptain.getSiegeMinionMap().put(siegeMinion,slot);
 
         siegeMinion.runAfterLoad();
         DbManager.addToCache(siegeMinion);
@@ -1657,13 +1651,13 @@ public class Mob extends AbstractIntelligenceAgent {
         this.bonuses = new PlayerBonuses(this);
 
         //TODO set these correctly later
-        this.rangeHandOne = 8;
+        this.rangeHandOne = this.mobBase.getAttackRange();
         this.rangeHandTwo = -1;
-        this.minDamageHandOne = 0;
-        this.maxDamageHandOne = 0;
-        this.minDamageHandTwo = 1;
-        this.maxDamageHandTwo = 4;
-        this.atrHandOne = 300;
+        this.minDamageHandOne = (int)this.mobBase.getMinDmg();
+        this.maxDamageHandOne = (int)this.mobBase.getMaxDmg();
+        this.minDamageHandTwo = 0;
+        this.maxDamageHandTwo = 0;
+        this.atrHandOne = this.mobBase.getAtr();
         this.defenseRating = (short) this.mobBase.getDefenseRating();
         this.isActive = true;
 
