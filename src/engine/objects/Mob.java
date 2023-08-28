@@ -513,9 +513,6 @@ public class Mob extends AbstractIntelligenceAgent {
 
         Mob siegeMinion;
 
-        if (artyCaptain.getSiegeMinionMap().size() == 3)
-            return null;
-
         siegeMinion = new Mob();
 
         siegeMinion.level = 1;
