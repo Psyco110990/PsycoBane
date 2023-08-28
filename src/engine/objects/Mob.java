@@ -1734,7 +1734,8 @@ public class Mob extends AbstractIntelligenceAgent {
 
             //assign 5 random patrol points for regular mobs
 
-            if (!(this.agentType.equals(AIAgentType.GUARD)) && !this.isPlayerGuard() && !this.isPet() && !this.isNecroPet() && !(this.agentType.equals(AIAgentType.PET)) && !(this.agentType.equals(AIAgentType.CHARMED))) {
+            if (this.guardCaptain == null && this.isPlayerGuard == false && !isPet() == false && isNecroPet() == false) {
+
                 this.patrolPoints = new ArrayList<>();
 
                 for (int i = 0; i < 5; ++i) {
