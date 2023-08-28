@@ -74,16 +74,17 @@ public class MinionTrainingMsgHandler extends AbstractClientMsgHandler {
 
                         DbManager.removeFromCache(toRemove);
 
+                        if(toRemove.guardCaptain.getObjectType().equals(Enum.GameObjectType.PlayerCharacter)) {
+                            PlayerCharacter petOwner = (PlayerCharacter) toRemove.guardCaptain;
 
-                        PlayerCharacter petOwner = (PlayerCharacter) toRemove.guardCaptain;
+                            if (petOwner != null) {
+                                petOwner.setPet(null);
 
-                        if (petOwner != null) {
-                            petOwner.setPet(null);
-
-                            toRemove.guardCaptain = null;
-                            PetMsg petMsg = new PetMsg(5, null);
-                            Dispatch dispatch = Dispatch.borrow(petOwner, petMsg);
-                            DispatchMessage.dispatchMsgDispatch(dispatch, DispatchChannel.SECONDARY);
+                                toRemove.guardCaptain = null;
+                                PetMsg petMsg = new PetMsg(5, null);
+                                Dispatch dispatch = Dispatch.borrow(petOwner, petMsg);
+                                DispatchMessage.dispatchMsgDispatch(dispatch, DispatchChannel.SECONDARY);
+                            }
                         }
 
                         // we Found the move to remove, lets break the for loop so it doesnt look for more.
