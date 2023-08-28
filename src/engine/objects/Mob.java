@@ -33,7 +33,6 @@ import org.pmw.tinylog.Logger;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -44,7 +43,6 @@ import static engine.net.client.msg.ErrorPopupMsg.sendErrorPopup;
 
 public class Mob extends AbstractIntelligenceAgent {
 
-    private static final ReentrantReadWriteLock createLock = new ReentrantReadWriteLock();
     private static int staticID = 0;
     //mob specific
     public final ConcurrentHashMap<Integer, Boolean> playerAgroMap = new ConcurrentHashMap<>();
@@ -535,14 +533,14 @@ public class Mob extends AbstractIntelligenceAgent {
         return siegeMinion;
     }
 
-    public static Mob createPetMinion(int loadID, Zone parent, PlayerCharacter petOwner, short level) {
-
-        Mob petMinion = new Mob();
+    public static synchronized Mob createPetMinion(int loadID, Zone parent, PlayerCharacter petOwner, short level) {
 
         if (petOwner == null)
             return null;
 
-        createLock.writeLock().lock();
+        Mob petMinion = new Mob();
+
+        petMinion.currentID = (--Mob.staticID);
 
         petMinion.level = (short) (level + 20);
         petMinion.loadID = loadID;
@@ -556,11 +554,12 @@ public class Mob extends AbstractIntelligenceAgent {
         petMinion.behaviourType = MobBehaviourType.Pet1;
         petMinion.firstName = "";
         petMinion.lastName = "";
+
         petMinion.despawned = false;
         petMinion.runAfterLoad();
         DbManager.addToCache(petMinion);
-        createLock.writeLock().unlock();
         petMinion.setLoc(petMinion.bindLoc);
+
         return petMinion;
     }
     public static Mob getMob(int id) {
