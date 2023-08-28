@@ -684,6 +684,7 @@ public class MobAI {
                     GuardWallArcherLogic(mob);
                     break;
                 case Pet1:
+                case SiegeEngine:
                     PetLogic(mob);
                     break;
                 case HamletGuard:
