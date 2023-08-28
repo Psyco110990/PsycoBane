@@ -1737,25 +1737,7 @@ public class Mob extends AbstractIntelligenceAgent {
 
             if (this.guardCaptain == null && this.isPlayerGuard == false && !isPet() == false && isNecroPet() == false) {
 
-                this.patrolPoints = new ArrayList<>();
-
-                for (int i = 0; i < 5; ++i) {
-                    float patrolRadius = this.getSpawnRadius();
-
-                    if (patrolRadius > 256)
-                        patrolRadius = 256;
-
-                    if (patrolRadius < 60)
-                        patrolRadius = 60;
-
-                    Vector3fImmutable newPatrolPoint = Vector3fImmutable.getRandomPointInCircle(this.getBindLoc(), patrolRadius);
-                    this.patrolPoints.add(newPatrolPoint);
-
-                    if (i == 1) {
-                        this.loc = newPatrolPoint;
-                        this.endLoc = newPatrolPoint;
-                    }
-                }
+                NPCManager.AssignPatrolPoints(this);
             }
 
             this.deathTime = 0;

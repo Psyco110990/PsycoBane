@@ -403,4 +403,25 @@ public enum NPCManager {
         return maxSlots;
     }
 
+    public static void AssignPatrolPoints(Mob mob) {
+        mob.patrolPoints = new ArrayList<>();
+
+        for (int i = 0; i < 5; ++i) {
+            float patrolRadius = mob.getSpawnRadius();
+
+            if (patrolRadius > 256)
+                patrolRadius = 256;
+
+            if (patrolRadius < 60)
+                patrolRadius = 60;
+
+            Vector3fImmutable newPatrolPoint = Vector3fImmutable.getRandomPointInCircle(mob.getBindLoc(), patrolRadius);
+            mob.patrolPoints.add(newPatrolPoint);
+
+            if (i == 1) {
+                mob.loc = newPatrolPoint;
+                mob.endLoc = newPatrolPoint;
+            }
+        }
+    }
 }
