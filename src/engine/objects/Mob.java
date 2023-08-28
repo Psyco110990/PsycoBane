@@ -524,12 +524,12 @@ public class Mob extends AbstractIntelligenceAgent {
 
         siegeMinion.runAfterLoad();
 
-        int slot = artyCaptain.getSiegeMinionMap().size() + 1;
-        artyCaptain.getSiegeMinionMap().put(siegeMinion, slot);
-
         DbManager.addToCache(siegeMinion);
         siegeMinion.setLoc(siegeMinion.bindLoc);
         siegeMinion.despawn();
+
+        int slot = artyCaptain.getSiegeMinionMap().size() + 1;
+        artyCaptain.getSiegeMinionMap().put(siegeMinion, slot);
 
         return siegeMinion;
     }
