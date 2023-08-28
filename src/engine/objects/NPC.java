@@ -50,7 +50,6 @@ public class NPC extends AbstractCharacter {
     // Used for thread safety
     public final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
     private final ArrayList<MobLoot> rolling = new ArrayList<>();
-    private final ConcurrentHashMap<Mob, Integer> siegeMinionMap = new ConcurrentHashMap<>(MBServerStatics.CHM_INIT_CAP, MBServerStatics.CHM_LOAD, MBServerStatics.CHM_THREAD_LOW);
     public ReentrantReadWriteLock minionLock = new ReentrantReadWriteLock();
     public ArrayList<ProducedItem> forgedItems = new ArrayList<>();
     public HashMap<Integer, MobEquipment> equip = null;

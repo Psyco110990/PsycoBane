@@ -513,7 +513,11 @@ public class Mob extends AbstractIntelligenceAgent {
 
         Mob siegeMinion;
 
-        if (artyCaptain.getSiegeMinionMap().size() == 3)
+        int maxSlots = 1;
+        if(artyCaptain.getContractID() == 839)//artillery captain for bulwark
+            maxSlots = 3;
+
+        if (artyCaptain.getSiegeMinionMap().size() == maxSlots)
             return null;
 
         siegeMinion = new Mob();
