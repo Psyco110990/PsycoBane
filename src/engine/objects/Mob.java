@@ -522,10 +522,11 @@ public class Mob extends AbstractIntelligenceAgent {
         //siegeMinion.spawnTime = (60 * 15);
         siegeMinion.spawnTime = 15;
 
-        int slot = artyCaptain.getSiegeMinionMap().size() + 1;
-        artyCaptain.getSiegeMinionMap().put(siegeMinion,slot);
-
         siegeMinion.runAfterLoad();
+
+        int slot = artyCaptain.getSiegeMinionMap().size() + 1;
+        artyCaptain.getSiegeMinionMap().put(siegeMinion, slot);
+
         DbManager.addToCache(siegeMinion);
         siegeMinion.setLoc(siegeMinion.bindLoc);
         siegeMinion.despawn();
