@@ -316,9 +316,14 @@ public class Mob extends AbstractIntelligenceAgent {
 
             writer.put((byte) 1);
 
-            if (mob.getOwner() != null) {
-                writer.putInt(mob.getOwner().getObjectType().ordinal());
-                writer.putInt(mob.getOwner().getObjectUUID());
+
+            if ((PlayerCharacter) mob.guardCaptain != null) {
+
+
+                writer.putInt(((PlayerCharacter) mob.guardCaptain).getObjectType().ordinal());
+
+
+                writer.putInt(((PlayerCharacter) mob.guardCaptain).getObjectUUID());
             } else {
                 writer.putInt(0); //ownerType
                 writer.putInt(0); //ownerID
@@ -732,17 +737,6 @@ public class Mob extends AbstractIntelligenceAgent {
         return this.guild.getObjectUUID();
     }
 
-    public PlayerCharacter getOwner() {
-
-
-        return (PlayerCharacter) this.guardCaptain;
-    }
-
-    public void setOwner(PlayerCharacter value) {
-
-        this.guardCaptain = value;
-    }
-
     public void setFearedObject(AbstractWorldObject awo) {
         this.fearedObject = awo;
     }
@@ -751,7 +745,7 @@ public class Mob extends AbstractIntelligenceAgent {
     public Vector3fImmutable getBindLoc() {
 
         if (this.isPet() && !this.behaviourType.equals(MobBehaviourType.SiegeEngine))
-            return this.getOwner() != null ? this.getOwner().getLoc() : this.getLoc();
+            return (PlayerCharacter) this.guardCaptain != null ? ((PlayerCharacter) this.guardCaptain).getLoc() : this.getLoc();
         else
             return this.bindLoc;
     }
@@ -875,7 +869,8 @@ public class Mob extends AbstractIntelligenceAgent {
 
                 if (mobAttacker.isPet()) {
 
-                    PlayerCharacter owner = mobAttacker.getOwner();
+
+                    PlayerCharacter owner = (PlayerCharacter) mobAttacker.guardCaptain;
 
                     if (owner != null)
                         if (!this.isPet() && !this.isNecroPet() && !(this.agentType.equals(AIAgentType.PET)) && !this.isPlayerGuard) {
@@ -945,13 +940,17 @@ public class Mob extends AbstractIntelligenceAgent {
 
                 if (this.isPet()) {
 
-                    PlayerCharacter petOwner = this.getOwner();
+
+                    PlayerCharacter petOwner = (PlayerCharacter) this.guardCaptain;
 
                     if (petOwner != null) {
-                        this.setOwner(null);
+
+                        this.guardCaptain = null;
                         petOwner.setPet(null);
                         PetMsg petMsg = new PetMsg(5, null);
-                        dispatch = Dispatch.borrow(this.getOwner(), petMsg);
+
+
+                        dispatch = Dispatch.borrow((PlayerCharacter) this.guardCaptain, petMsg);
                         DispatchMessage.dispatchMsgDispatch(dispatch, Enum.DispatchChannel.PRIMARY);
                     }
                 }
@@ -974,10 +973,13 @@ public class Mob extends AbstractIntelligenceAgent {
                 WorldGrid.RemoveWorldObject(this);
 
                 DbManager.removeFromCache(this);
-                PlayerCharacter petOwner = this.getOwner();
+
+
+                PlayerCharacter petOwner = (PlayerCharacter) this.guardCaptain;
 
                 if (petOwner != null) {
-                    this.setOwner(null);
+
+                    this.guardCaptain = null;
                     petOwner.setPet(null);
                     PetMsg petMsg = new PetMsg(5, null);
                     dispatch = Dispatch.borrow(petOwner, petMsg);

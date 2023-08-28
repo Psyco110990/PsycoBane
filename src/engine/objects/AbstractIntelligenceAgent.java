@@ -101,7 +101,8 @@ public abstract class AbstractIntelligenceAgent extends AbstractCharacter {
             this.agentType = Enum.AIAgentType.CHARMED;
 
         if (this.getObjectType().equals(GameObjectType.Mob)) {
-            ((Mob) this).setOwner(owner);
+
+            ((Mob) this).guardCaptain = owner;
         }
     }
 
@@ -180,7 +181,7 @@ public abstract class AbstractIntelligenceAgent extends AbstractCharacter {
                     owner.setPet(null);
 
                 if (this.getObjectType().equals(GameObjectType.Mob))
-                    ((Mob) this).setOwner(null);
+                    ((Mob) this).guardCaptain = null;
             }
 
 

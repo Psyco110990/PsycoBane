@@ -786,24 +786,30 @@ public class MobAI {
             switch (mob.behaviourType) {
 
                 case Pet1:
-                    if (mob.getOwner() == null)
+
+
+                    if ((PlayerCharacter) mob.guardCaptain == null)
                         return;
 
-                    if (!mob.playerAgroMap.containsKey(mob.getOwner().getObjectUUID())) {
+
+                    if (!mob.playerAgroMap.containsKey(((PlayerCharacter) mob.guardCaptain).getObjectUUID())) {
 
                         //mob no longer has its owner loaded, translocate pet to owner
 
-                        MovementManager.translocate(mob, mob.getOwner().getLoc(), null);
+
+                        MovementManager.translocate(mob, ((PlayerCharacter) mob.guardCaptain).getLoc(), null);
                         return;
                     }
                     if (mob.getCombatTarget() == null) {
 
                         //move back to owner
 
-                        if (CombatUtilities.inRange2D(mob, mob.getOwner(), 6))
+
+                        if (CombatUtilities.inRange2D(mob, (PlayerCharacter) mob.guardCaptain, 6))
                             return;
 
-                        mob.destination = mob.getOwner().getLoc();
+
+                        mob.destination = ((PlayerCharacter) mob.guardCaptain).getLoc();
                         MovementUtilities.moveToLocation(mob, mob.destination, 5);
                     } else
                         chaseTarget(mob);
@@ -1103,7 +1109,8 @@ public class MobAI {
 
         try {
 
-            if (mob.getOwner() == null && mob.isNecroPet() == false && mob.isSiege() == false)
+
+            if ((PlayerCharacter) mob.guardCaptain == null && mob.isNecroPet() == false && mob.isSiege() == false)
                 if (ZoneManager.getSeaFloor().zoneMobSet.contains(mob))
                     mob.killCharacter("no owner");
 

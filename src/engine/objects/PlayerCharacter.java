@@ -4690,7 +4690,8 @@ public class PlayerCharacter extends AbstractCharacter {
 
             } else if (currentPet.isSiege()) {
                 currentPet.agentType = AIAgentType.MOBILE;
-                currentPet.setOwner(null);
+
+                currentPet.guardCaptain = null;
                 currentPet.setCombatTarget(null);
                 if (currentPet.isAlive())
                     WorldGrid.updateObject(currentPet);

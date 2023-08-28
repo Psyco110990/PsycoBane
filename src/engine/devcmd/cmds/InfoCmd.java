@@ -440,7 +440,9 @@ public class InfoCmd extends AbstractDevCmd {
                         output += "isSummonedPet: true";
                     else
                         output += "isSummonedPet: false";
-                    PlayerCharacter owner = targetMob.getOwner();
+
+
+                    PlayerCharacter owner = (PlayerCharacter) targetMob.guardCaptain;
                     if (owner != null)
                         output += "     owner: " + owner.getObjectUUID();
                     output += newline;

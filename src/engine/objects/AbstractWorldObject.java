@@ -357,7 +357,9 @@ public abstract class AbstractWorldObject extends AbstractGameObject {
             Mob mob = (Mob) this;
             if (mob.isSiege()) {
                 if (mob.isPet()) {
-                    PlayerCharacter petOwner = mob.getOwner();
+
+
+                    PlayerCharacter petOwner = (PlayerCharacter) mob.guardCaptain;
                     if (petOwner != null && source.equals(EffectSourceType.Effect)) {
                         petOwner.dismissPet();
                         return;

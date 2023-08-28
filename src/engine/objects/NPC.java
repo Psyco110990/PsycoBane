@@ -655,12 +655,14 @@ public class NPC extends AbstractCharacter {
             WorldGrid.RemoveWorldObject(toRemove);
             DbManager.removeFromCache(toRemove);
 
-            PlayerCharacter petOwner = toRemove.getOwner();
+
+            PlayerCharacter petOwner = (PlayerCharacter) toRemove.guardCaptain;
 
             if (petOwner != null) {
 
                 petOwner.setPet(null);
-                toRemove.setOwner(null);
+
+                toRemove.guardCaptain = null;
 
                 PetMsg petMsg = new PetMsg(5, null);
                 Dispatch dispatch = Dispatch.borrow(petOwner, petMsg);

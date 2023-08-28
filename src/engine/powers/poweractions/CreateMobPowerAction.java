@@ -94,7 +94,8 @@ public class CreateMobPowerAction extends AbstractPowerAction {
 
             } else if (currentPet != null && currentPet.isSiege()) {
                 currentPet.agentType = Enum.AIAgentType.MOBILE;
-                currentPet.setOwner(null);
+
+                currentPet.guardCaptain = null;
                 currentPet.setCombatTarget(null);
 
                 if (currentPet.isAlive())
@@ -110,7 +111,7 @@ public class CreateMobPowerAction extends AbstractPowerAction {
                     DbManager.removeFromCache(currentPet);
                     currentPet.setCombatTarget(null);
 
-                    currentPet.setOwner(null);
+                    currentPet.guardCaptain = null;
                     WorldGrid.RemoveWorldObject(currentPet);
                     //currentPet.getParentZone().zoneMobSet.remove(currentPet);
                     seaFloor.zoneMobSet.remove(currentPet);
@@ -120,7 +121,8 @@ public class CreateMobPowerAction extends AbstractPowerAction {
                 } else {
                     if (currentPet.isSiege()) {
                         currentPet.agentType = Enum.AIAgentType.MOBILE;
-                        currentPet.setOwner(null);
+
+                        currentPet.guardCaptain = null;
                         currentPet.setCombatTarget(null);
 
                         if (currentPet.isAlive())
